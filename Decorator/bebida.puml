@@ -1,0 +1,20 @@
+@startuml
+interface IBebida {
+  + GetDescripcion(): string
+  + GetCosto(): double
+}
+
+class Cafe implements IBebida
+
+abstract class AdicionDecorator implements IBebida {
+  # bebidaEnvuelto: IBebida
+  + AdicionDecorator(bebida: IBebida)
+}
+
+class Leche extends AdicionDecorator
+
+IBebida <|-- Cafe
+IBebida <|-- AdicionDecorator
+AdicionDecorator o-- IBebida : envuelve
+AdicionDecorator <|-- Leche
+@enduml
