@@ -1,0 +1,10 @@
+@startuml
+!theme toy
+class ConfiguracionManager {
+  - static _instancia : ConfiguracionManager
+  - ConfiguracionManager()
+  + static GetInstancia() : ConfiguracionManager
+  + Tema : String
+  + MostrarConfiguracion() : void
+}
+@enduml
