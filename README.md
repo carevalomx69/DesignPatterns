@@ -19,4 +19,4 @@ Además, se incluye una guía de laboratorio en formato Markdown para apoyar el 
 
 ## Autor
 
-Carlos A. Revalomx
+Carlos Arevalo
