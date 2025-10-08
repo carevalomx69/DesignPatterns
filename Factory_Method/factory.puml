@@ -1,0 +1,21 @@
+@startuml
+abstract class Documento {
+  + generar()
+}
+
+class DocumentoPDF {
+  + generar()
+}
+
+class DocumentoHTML {
+  + generar()
+}
+
+class CreadorDocumentos {
+  + crearDocumento(tipo): Documento
+}
+
+Documento <|-- DocumentoPDF
+Documento <|-- DocumentoHTML
+CreadorDocumentos ..> Documento : <<crea>>
+@enduml
