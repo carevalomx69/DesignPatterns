@@ -1,10 +1,12 @@
 @startuml
-!theme toy
-class ConfiguracionManager {
-  - static _instancia : ConfiguracionManager
-  - ConfiguracionManager()
-  + static GetInstancia() : ConfiguracionManager
-  + Tema : String
-  + MostrarConfiguracion() : void
+!define PrimaryKey(x) <b><color:#b8861b>x</color></b>
+!define Static(x) <color:#5D9ECF>{static} x</color>
+
+class Logger {
+    - Static(Logger _instance)
+    --
+    - Logger()
+    + Static(Logger Instance)
+    + Log(string message)
 }
 @enduml
