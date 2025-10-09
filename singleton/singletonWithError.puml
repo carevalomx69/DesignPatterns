@@ -1,0 +1,34 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Logger {
+  {static} - _instance : Logger
+  - _logCount : int
+  + <<constructor>> Logger()
+  {static} + Instance : Logger
+  + Log(message : string) : void
+}
+
+class Program {
+  {static} + Main(args : string[]) : void
+}
+
+note right of Logger::Logger
+  ⚠️ PROBLEMA: Constructor PÚBLICO
+  Permite crear múltiples instancias
+  violando el patrón Singleton
+end note
+
+note bottom of Logger
+  Campo estático: static readonly _instance
+  Se crea UNA vez en la inicialización
+end note
+
+Program ..> Logger : <<usa>>
+note on link
+  logger1 = Logger.Instance
+  logger2 = Logger.Instance
+  logger3 = new Logger() ❌
+end note
+
+@enduml
