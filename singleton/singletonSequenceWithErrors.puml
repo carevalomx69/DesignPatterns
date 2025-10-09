@@ -1,0 +1,57 @@
+@startuml
+participant "Program\n(Main)" as Cliente
+participant ":Logger\n(instancia estática)" as Singleton
+participant ":Logger\n(instancia nueva)" as Logger3
+
+== Inicialización estática (antes de Main) ==
+note over Singleton #lightblue: static readonly _instance = new Logger()
+create Singleton #yellow
+note right of Singleton: Constructor PÚBLICO ejecutado\nConsole: "¡Se ha creado la única instancia!"\n_logCount = 0
+
+== Ejecución de Main() ==
+activate Cliente
+note left of Cliente: Console.WriteLine("--- Iniciando aplicación ---")
+
+Cliente -> Singleton: logger1 = Logger.Instance
+activate Singleton
+Singleton --> Cliente: return _instance
+deactivate Singleton
+
+Cliente -> Singleton: logger1.Log("Primer evento...")
+activate Singleton
+note right of Singleton: _logCount = 1\nConsole: "[1] LOG: Primer evento..."
+Singleton --> Cliente
+deactivate Singleton
+
+Cliente -> Singleton: logger2 = Logger.Instance
+activate Singleton
+Singleton --> Cliente: return _instance (misma instancia)
+deactivate Singleton
+
+Cliente -> Singleton: logger2.Log("Segundo evento...")
+activate Singleton
+note right of Singleton: _logCount = 2\nConsole: "[2] LOG: Segundo evento..."
+Singleton --> Cliente
+deactivate Singleton
+
+== ⚠️ VIOLACIÓN DEL PATRÓN ==
+Cliente -> Logger3: logger3 = new Logger()
+create Logger3 #ff6b6b
+note right of Logger3 #ffcccc: ❌ NUEVA INSTANCIA CREADA\nConstructor público permite esto\nConsole: "¡Se ha creado la única instancia!"\n_logCount = 0 (contador independiente)
+
+Cliente -> Logger3: logger3.Log("TERCER evento...")
+activate Logger3
+note right of Logger3: _logCount = 1 (¡su propio contador!)\nConsole: "[1] LOG: TERCER evento..."
+Logger3 --> Cliente
+deactivate Logger3
+
+note left of Cliente #ffcccc: Console.WriteLine("ERROR COMPROBADO:\nlogger1 y logger3 NO son la MISMA instancia")
+
+note over Singleton, Logger3 #pink
+  **PROBLEMA DEMOSTRADO:**
+  Ahora existen DOS objetos Logger diferentes
+  - Singleton (_instance): _logCount = 2
+  - Logger3 (nueva): _logCount = 1
+end note
+
+@enduml
