@@ -1,0 +1,38 @@
+@startuml
+participant "Program\n(Main)" as Cliente
+participant ":Logger" as Singleton
+
+== Inicialización estática (antes de Main) ==
+note over Singleton #lightblue: static readonly _instance = new Logger()
+create Singleton #yellow
+note right of Singleton: Constructor privado ejecutado\nConsole: "¡Se ha creado la única instancia!"
+
+== Ejecución de Main() ==
+activate Cliente
+note left of Cliente: Console.WriteLine("--- Iniciando aplicación ---")
+
+Cliente -> Singleton: logger1 = Logger.Instance
+activate Singleton
+Singleton --> Cliente: return _instance
+deactivate Singleton
+
+Cliente -> Singleton: logger1.Log("Primer evento registrado")
+activate Singleton
+note right of Singleton: _logCount++\nConsole: "[1] LOG: Primer evento..."
+Singleton --> Cliente
+deactivate Singleton
+
+Cliente -> Singleton: logger2 = Logger.Instance
+activate Singleton
+Singleton --> Cliente: return _instance (misma instancia)
+deactivate Singleton
+
+Cliente -> Singleton: logger2.Log("Segundo evento registrado...")
+activate Singleton
+note right of Singleton: _logCount++\nConsole: "[2] LOG: Segundo evento..."
+Singleton --> Cliente
+deactivate Singleton
+
+note left of Cliente: Console.WriteLine("COMPROBACIÓN: logger1 y logger2\nson la MISMA instancia")
+
+@enduml
