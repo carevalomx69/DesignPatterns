@@ -1,0 +1,143 @@
+@startuml
+actor Program
+participant ":Director" as Director
+participant "builderGamer\n:BuilderGamer" as BuilderGamer
+participant "gamer\n:Computadora" as CompGamer
+participant "builderOficina\n:BuilderOficina" as BuilderOficina
+participant "oficina\n:Computadora" as CompOficina
+participant "builderPersonalizado\n:BuilderGamer" as BuilderPersonalizado
+participant "pcParcial\n:Computadora" as CompParcial
+
+activate Program
+
+== Construcción 1: Computadora Gamer (con Director) ==
+
+Program -> Director: new Director()
+activate Director
+
+Program -> BuilderGamer: new BuilderGamer()
+activate BuilderGamer
+create CompGamer
+BuilderGamer -> CompGamer: new Computadora("Computadora Gamer")
+note right of CompGamer: Producto creado\ninterno al builder
+
+Program -> Director: ConstruirComputadoraCompleta(builderGamer)
+note right: Director orquesta\nel proceso
+
+Director -> BuilderGamer: ConfigurarCPU()
+activate BuilderGamer
+BuilderGamer -> CompGamer: AgregarParte("CPU", "Intel Core i9...")
+note right of CompGamer: Primera parte\nagregada
+BuilderGamer --> Director
+deactivate BuilderGamer
+
+Director -> BuilderGamer: ConfigurarRAM()
+activate BuilderGamer
+BuilderGamer -> CompGamer: AgregarParte("RAM", "32 GB DDR5")
+note right of CompGamer: Segunda parte\nagregada
+BuilderGamer --> Director
+deactivate BuilderGamer
+
+Director -> BuilderGamer: ConfigurarAlmacenamiento()
+activate BuilderGamer
+BuilderGamer -> CompGamer: AgregarParte("Almacenamiento", "1 TB NVMe...")
+note right of CompGamer: Tercera parte\nagregada
+BuilderGamer --> Director
+deactivate BuilderGamer
+
+Director --> Program
+deactivate Director
+
+Program -> BuilderGamer: GetResultado()
+BuilderGamer --> Program: return gamer
+deactivate BuilderGamer
+
+Program -> CompGamer: MostrarConfiguracion()
+activate CompGamer
+note right of CompGamer: Console:\n"--- Configuración de\nla Computadora Gamer ---\nCPU: Intel Core i9...\nRAM: 32 GB DDR5\n..."
+CompGamer --> Program
+deactivate CompGamer
+
+== Construcción 2: Computadora Oficina (con Director) ==
+
+Program -> BuilderOficina: new BuilderOficina()
+activate BuilderOficina
+create CompOficina
+BuilderOficina -> CompOficina: new Computadora("Computadora de Oficina")
+
+Program -> Director: ConstruirComputadoraCompleta(builderOficina)
+activate Director
+
+Director -> BuilderOficina: ConfigurarCPU()
+activate BuilderOficina
+BuilderOficina -> CompOficina: AgregarParte("CPU", "Intel Core i3...")
+BuilderOficina --> Director
+deactivate BuilderOficina
+
+Director -> BuilderOficina: ConfigurarRAM()
+activate BuilderOficina
+BuilderOficina -> CompOficina: AgregarParte("RAM", "8 GB DDR4")
+BuilderOficina --> Director
+deactivate BuilderOficina
+
+Director -> BuilderOficina: ConfigurarAlmacenamiento()
+activate BuilderOficina
+BuilderOficina -> CompOficina: AgregarParte("Almacenamiento", "256 GB SATA SSD")
+BuilderOficina --> Director
+deactivate BuilderOficina
+
+Director --> Program
+deactivate Director
+
+Program -> BuilderOficina: GetResultado()
+BuilderOficina --> Program: return oficina
+deactivate BuilderOficina
+
+Program -> CompOficina: MostrarConfiguracion()
+activate CompOficina
+note right of CompOficina: Console:\n"--- Configuración de\nla Computadora de Oficina ---\nCPU: Intel Core i3...\n..."
+CompOficina --> Program
+deactivate CompOficina
+
+== Construcción 3: Personalizada (SIN Director) ==
+
+note over Program #lightblue
+  El cliente puede construir
+  directamente sin el Director
+  para mayor flexibilidad
+end note
+
+Program -> BuilderPersonalizado: new BuilderGamer()
+activate BuilderPersonalizado
+create CompParcial
+BuilderPersonalizado -> CompParcial: new Computadora("Computadora Gamer")
+
+Program -> BuilderPersonalizado: ConfigurarCPU()
+note right: Solo configuramos\nCPU (construcción parcial)
+activate BuilderPersonalizado
+BuilderPersonalizado -> CompParcial: AgregarParte("CPU", "Intel Core i9...")
+BuilderPersonalizado --> Program
+deactivate BuilderPersonalizado
+
+Program -> BuilderPersonalizado: GetResultado()
+BuilderPersonalizado --> Program: return pcParcial
+deactivate BuilderPersonalizado
+
+Program -> CompParcial: MostrarConfiguracion()
+activate CompParcial
+note right of CompParcial: Console:\n"--- Configuración...---\nCPU: Intel Core i9..."\n(solo tiene CPU)
+CompParcial --> Program
+deactivate CompParcial
+
+deactivate Program
+
+note over Program, CompParcial #lightyellow
+  **Ventajas del Patrón Builder:**
+  1. Separación: construcción vs representación
+  2. Control: construcción paso a paso
+  3. Flexibilidad: mismo proceso, diferentes productos
+  4. Reutilización: Director define orden estándar
+  5. Opcionalidad: construcción parcial sin Director
+end note
+
+@enduml
