@@ -1,0 +1,33 @@
+@startuml
+class Computadora {
+    + AgregarParte(nombre, valor)
+    + MostrarConfiguracion()
+}
+
+interface IComputadoraBuilder {
+    + ConfigurarCPU()
+    + ConfigurarRAM()
+    + ConfigurarAlmacenamiento()
+    + GetResultado(): Computadora
+}
+
+class BuilderGamer {
+    - Computadora _computadora
+    + ConfigurarCPU()
+    + ConfigurarRAM()
+    + ConfigurarAlmacenamiento()
+    + GetResultado(): Computadora
+}
+
+class Director {
+    + ConstruirComputadoraCompleta(IComputadoraBuilder builder)
+}
+
+IComputadoraBuilder <|.. BuilderGamer
+IComputadoraBuilder <|.. BuilderOficina
+
+Director o-- IComputadoraBuilder
+BuilderGamer ..> Computadora : creates
+BuilderOficina ..> Computadora : creates
+
+@enduml
