@@ -1,0 +1,120 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Computadora {
+  - _partes : Dictionary<string,string>
+  + Tipo : string
+  + <<constructor>> Computadora(tipo : string)
+  + AgregarParte(nombre : string, valor : string) : void
+  + MostrarConfiguracion() : void
+}
+
+interface IComputadoraBuilder <<interface>> {
+  + ConfigurarCPU() : void
+  + ConfigurarRAM() : void
+  + ConfigurarAlmacenamiento() : void
+  + GetResultado() : Computadora
+}
+
+class BuilderGamer {
+  - _computadora : Computadora
+  + ConfigurarCPU() : void
+  + ConfigurarRAM() : void
+  + ConfigurarAlmacenamiento() : void
+  + GetResultado() : Computadora
+}
+
+class BuilderOficina {
+  - _computadora : Computadora
+  + ConfigurarCPU() : void
+  + ConfigurarRAM() : void
+  + ConfigurarAlmacenamiento() : void
+  + GetResultado() : Computadora
+}
+
+class Director {
+  + ConstruirComputadoraCompleta(builder : IComputadoraBuilder) : void
+}
+
+class Program {
+  + {static} Main(args : string[]) : void
+}
+
+' Relaciones con notas explicativas
+
+IComputadoraBuilder <|.. BuilderGamer
+note on link
+  **Realización (implements)**
+  BuilderGamer implementa la interfaz
+  IComputadoraBuilder, cumpliendo el
+  contrato de construcción
+end note
+
+IComputadoraBuilder <|.. BuilderOficina
+note on link
+  **Realización (implements)**
+  BuilderOficina implementa la interfaz
+  IComputadoraBuilder, cumpliendo el
+  contrato de construcción
+end note
+
+Director o-- IComputadoraBuilder
+note on link
+  **Agregación** (tiene-un temporal)
+  El Director usa un IComputadoraBuilder
+  para orquestar la construcción.
+  El builder puede existir sin el Director.
+  La relación es temporal (solo durante
+  la llamada a ConstruirComputadoraCompleta)
+end note
+
+BuilderGamer ..> Computadora : <<crea>>
+note on link
+  **Dependencia de Creación**
+  BuilderGamer crea y mantiene
+  una instancia de Computadora
+  internamente (_computadora)
+end note
+
+BuilderOficina ..> Computadora : <<crea>>
+note on link
+  **Dependencia de Creación**
+  BuilderOficina crea y mantiene
+  una instancia de Computadora
+  internamente (_computadora)
+end note
+
+Program ..> Director : <<usa>>
+note on link
+  **Dependencia de Uso**
+  Program crea y utiliza
+  un Director para coordinar
+  la construcción
+end note
+
+Program ..> BuilderGamer : <<usa>>
+Program ..> BuilderOficina : <<usa>>
+
+note right of Computadora
+  **Producto Complejo**
+  El objeto que queremos construir.
+  Tiene múltiples partes configurables.
+end note
+
+note right of IComputadoraBuilder
+  **Builder Interface**
+  Define los pasos de construcción.
+  Cada paso configura una parte
+  del producto.
+end note
+
+note left of Director
+  **Director (Opcional)**
+  Define el ORDEN de construcción
+  pero NO los detalles de las partes.
+  Puede construir distintas
+  representaciones usando
+  el mismo proceso.
+end note
+
+@enduml
