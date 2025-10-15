@@ -1,0 +1,117 @@
+@startuml
+participant Program
+participant "oficina\n:Computadora" as Oficina
+participant "gamerFull\n:Computadora" as Gamer
+participant "especial\n:Computadora" as Especial
+
+activate Program
+
+== Escenario 1: PC Oficina (Constructor #3) ==
+
+create Oficina
+Program -> Oficina: new Computadora("Oficina", "Intel Core i3",\n"8 GB DDR4", "256 GB SATA SSD")
+activate Oficina
+
+note right of Oficina
+  Constructor telescópico:
+  1. Llama a Computadora(tipo, cpu, ram)
+  2. Ese llama a Computadora(tipo, cpu)
+  3. Inicializa propiedades en cadena
+end note
+
+Oficina -> Oficina: Tipo = "Oficina"\nCPU = "Intel Core i3"
+Oficina -> Oficina: RAM = "8 GB DDR4"
+Oficina -> Oficina: Almacenamiento = "256 GB SATA SSD"
+note right of Oficina: Console: "<<Creando: Oficina\ncon Intel Core i3>>"
+
+Oficina --> Program: return oficina
+deactivate Oficina
+
+Program -> Oficina: MostrarConfiguracion()
+activate Oficina
+note right of Oficina
+  Console:
+  "--- Configuración de la Oficina ---
+    CPU: Intel Core i3
+    RAM: 8 GB DDR4
+    Almacenamiento: 256 GB SATA SSD
+    Gráfica: N/A"
+end note
+Oficina --> Program
+deactivate Oficina
+
+== Escenario 2: PC Gamer Full (Constructor #4) ==
+
+create Gamer
+Program -> Gamer: new Computadora("Gamer", "Intel Core i9",\n"32 GB DDR5", "1 TB NVMe SSD", "NVIDIA RTX 4080")
+activate Gamer
+
+Gamer -> Gamer: Tipo = "Gamer"\nCPU = "Intel Core i9"
+Gamer -> Gamer: RAM = "32 GB DDR5"
+Gamer -> Gamer: Almacenamiento = "1 TB NVMe SSD"
+Gamer -> Gamer: TarjetaGrafica = "NVIDIA RTX 4080"
+note right of Gamer: Console: "<<Creando: Gamer\ncon Intel Core i9>>"
+
+Gamer --> Program: return gamerFull
+deactivate Gamer
+
+Program -> Gamer: MostrarConfiguracion()
+activate Gamer
+note right of Gamer
+  Console:
+  "--- Configuración de la Gamer ---
+    CPU: Intel Core i9
+    RAM: 32 GB DDR5
+    Almacenamiento: 1 TB NVMe SSD
+    Gráfica: NVIDIA RTX 4080"
+end note
+Gamer --> Program
+deactivate Gamer
+
+== Escenario 3: Configuración Especial (¡PROBLEMA!) ==
+
+note over Program #ffcccc
+  ⚠️ **PROBLEMA DEL ANTI-PATRÓN:**
+  Para crear PC solo con CPU y Gráfica,
+  DEBES pasar null a RAM y Almacenamiento
+  porque el constructor los requiere en orden
+end note
+
+create Especial
+Program -> Especial: new Computadora("Especial", "AMD Ryzen 7",\nnull, null, "AMD Radeon RX 7900")
+activate Especial
+
+Especial -> Especial: Tipo = "Especial"\nCPU = "AMD Ryzen 7"
+Especial -> Especial: RAM = null ❌
+Especial -> Especial: Almacenamiento = null ❌
+Especial -> Especial: TarjetaGrafica = "AMD Radeon RX 7900"
+note right of Especial: Console: "<<Creando: Especial\ncon AMD Ryzen 7>>"
+
+Especial --> Program: return especial
+deactivate Especial
+
+Program -> Especial: MostrarConfiguracion()
+activate Especial
+note right of Especial
+  Console:
+  "--- Configuración de la Especial ---
+    CPU: AMD Ryzen 7
+    RAM: N/A  ← null se muestra como N/A
+    Almacenamiento: N/A  ← null
+    Gráfica: AMD Radeon RX 7900"
+end note
+Especial --> Program
+deactivate Especial
+
+deactivate Program
+
+note over Program, Especial #ffffcc
+  **PROBLEMAS EVIDENTES:**
+  1. Orden rígido de parámetros
+  2. Pasar null para saltar parámetros
+  3. Difícil de leer: ¿qué significa cada parámetro?
+  4. ¿Qué pasa si necesitas 10 parámetros opcionales?
+  5. Fácil cometer errores (invertir orden de parámetros)
+end note
+
+@enduml
