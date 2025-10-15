@@ -1,0 +1,61 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Computadora {
+  + Tipo : string {readOnly}
+  + CPU : string {readOnly}
+  + RAM : string {readOnly}
+  + Almacenamiento : string {readOnly}
+  + TarjetaGrafica : string {readOnly}
+  
+  + <<constructor>> Computadora(tipo, cpu)
+  + <<constructor>> Computadora(tipo, cpu, ram)
+  + <<constructor>> Computadora(tipo, cpu, ram, almacenamiento)
+  + <<constructor>> Computadora(tipo, cpu, ram, almacenamiento, grafica)
+  
+  + MostrarConfiguracion() : void
+}
+
+class Program {
+  + {static} Main(args : string[]) : void
+}
+
+Program ..> Computadora : <<crea directamente>>
+
+note right of Computadora::Computadora
+  ⚠️ **ANTI-PATRÓN:**
+  Constructores Telescópicos
+  
+  4 constructores diferentes para
+  manejar combinaciones de parámetros.
+  
+  **Problemas:**
+  - Difícil de mantener
+  - Orden rígido de parámetros
+  - Confusión sobre cuál usar
+  - No escala bien (¿6 parámetros? ¿10?)
+end note
+
+note bottom of Computadora
+  **Constructor Chaining:**
+  Cada constructor llama al anterior
+  para evitar duplicación de código
+  
+  Computadora(tipo, cpu)
+    ↓ llama a
+  Computadora(tipo, cpu, ram)
+    ↓ llama a
+  Computadora(tipo, cpu, ram, almacenamiento)
+    ↓ llama a
+  Computadora(tipo, cpu, ram, almacenamiento, grafica)
+end note
+
+note left of Program
+  **El cliente debe:**
+  - Recordar el orden exacto de parámetros
+  - Saber qué constructor usar
+  - Pasar null para parámetros intermedios
+  - No hay flexibilidad
+end note
+
+@enduml
