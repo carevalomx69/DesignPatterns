@@ -1,0 +1,26 @@
+@startuml
+interface IPagoNuevo {
+    + ProcesarPago(decimal cantidad)
+    + ObtenerEstado()
+}
+
+class ServicioTerceroPago {
+    + RealizarTransaccion(double monto)
+    + ConsultarDisponibilidad(): bool
+}
+
+class AdaptadorPagoTercero {
+    - ServicioTerceroPago _servicioTercero
+    + ProcesarPago(decimal cantidad)
+    + ObtenerEstado()
+}
+
+IPagoNuevo <|.. AdaptadorPagoTercero
+AdaptadorPagoTercero o-- ServicioTerceroPago : usa
+
+note left of AdaptadorPagoTercero
+  El adaptador implementa
+  la interfaz objetivo
+  y envuelve al adaptado.
+end note
+@enduml
