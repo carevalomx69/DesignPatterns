@@ -1,0 +1,122 @@
+@startuml
+participant Program
+participant "adaptador\n:AdaptadorPagoTercero" as Adaptador
+participant "servicioExistente\n:ServicioTerceroPago" as Servicio
+
+activate Program
+
+== Inicialización ==
+
+create Servicio
+Program -> Servicio: new ServicioTerceroPago()
+note right of Servicio
+  Servicio de terceros
+  con interfaz incompatible
+end note
+
+create Adaptador
+Program -> Adaptador: new AdaptadorPagoTercero(servicioExistente)
+activate Adaptador
+Adaptador -> Adaptador: _servicioTercero = servicioExistente
+note right of Adaptador
+  El Adaptador guarda
+  referencia al servicio
+end note
+Adaptador --> Program: return adaptador
+deactivate Adaptador
+
+== Llamada al Cliente (RealizarAccionesPago) ==
+
+Program -> Program: RealizarAccionesPago(adaptador, 125.50m)
+activate Program
+note left of Program
+  El cliente solo ve
+  IPagoNuevo, no sabe
+  del servicio tercero
+end note
+
+== ProcesarPago - TRADUCCIÓN EN ACCIÓN ==
+
+Program -> Adaptador: ProcesarPago(125.50m)
+activate Adaptador
+note right of Adaptador
+  Console: "[Adaptador]
+  Iniciando procesamiento
+  de pago..."
+end note
+
+Adaptador -> Adaptador: montoTercero = (double)125.50m
+note right of Adaptador
+  **TRADUCCIÓN 1:**
+  Convierte decimal → double
+  125.50m → 125.50
+end note
+
+Adaptador -> Servicio: RealizarTransaccion(125.50)
+activate Servicio
+note right of Servicio
+  **TRADUCCIÓN 2:**
+  ProcesarPago() → RealizarTransaccion()
+  (nombres diferentes)
+  
+  Console: "[ServicioTercero]:
+  Se realizó el cobro de $125.50 USD"
+end note
+Servicio --> Adaptador
+deactivate Servicio
+
+note right of Adaptador
+  Console: "[Adaptador]
+  Pago procesado y adaptado"
+end note
+
+Adaptador --> Program
+deactivate Adaptador
+
+== ObtenerEstado - TRADUCCIÓN DE RESPUESTA ==
+
+Program -> Adaptador: ObtenerEstado()
+activate Adaptador
+note right of Adaptador
+  Console: "[Adaptador]
+  Obteniendo estado del servicio..."
+end note
+
+Adaptador -> Servicio: ConsultarDisponibilidad()
+activate Servicio
+note right of Servicio
+  **TRADUCCIÓN 3:**
+  ObtenerEstado() → ConsultarDisponibilidad()
+  
+  Console: "[ServicioTercero]:
+  Consultando la disponibilidad..."
+end note
+Servicio --> Adaptador: return true
+deactivate Servicio
+
+Adaptador -> Adaptador: if (resultado == true)
+note right of Adaptador
+  **TRADUCCIÓN 4:**
+  Interpreta el bool
+  y genera mensaje apropiado
+  
+  Console: "[Adaptador]
+  El servicio de terceros está ACTIVO"
+end note
+
+Adaptador --> Program
+deactivate Adaptador
+
+deactivate Program
+
+deactivate Program
+
+note over Program, Servicio #lightgreen
+  **El Patrón Adapter en acción:**
+  1. Cliente trabaja solo con IPagoNuevo
+  2. Adaptador traduce llamadas y datos
+  3. Servicio Tercero recibe en su formato
+  4. Todo es transparente para el cliente
+end note
+
+@enduml
