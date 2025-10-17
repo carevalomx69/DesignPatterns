@@ -1,0 +1,23 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class ServicioTerceroPago {
+  + RealizarTransaccion(monto : double) : void
+  + ConsultarDisponibilidad() : bool
+}
+
+class Program {
+  + {static} Main(args : string[]) : void
+}
+
+Program ..> ServicioTerceroPago : <<usa directamente>>
+
+note right of Program
+  ❌ PROBLEMAS:
+  1. Acoplamiento directo
+  2. Conversiones manuales
+  3. No hay abstracción
+  4. Difícil cambiar proveedor
+end note
+
+@enduml
