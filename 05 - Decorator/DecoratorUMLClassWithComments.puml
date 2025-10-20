@@ -1,0 +1,83 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+abstract class Bebida {
+  + {abstract} ObtenerDescripcion() : string
+  + {abstract} ObtenerCosto() : double
+}
+
+class CafeSimple {
+  + ObtenerDescripcion() : string
+  + ObtenerCosto() : double
+}
+
+abstract class DecoradorBebida {
+  # _bebida : Bebida
+  + <<constructor>> DecoradorBebida(bebida : Bebida)
+  + ObtenerDescripcion() : string
+  + ObtenerCosto() : double
+}
+
+class Leche {
+  + <<constructor>> Leche(bebida : Bebida)
+  + ObtenerDescripcion() : string
+  + ObtenerCosto() : double
+}
+
+class Azucar {
+  + <<constructor>> Azucar(bebida : Bebida)
+  + ObtenerDescripcion() : string
+  + ObtenerCosto() : double
+}
+
+class Program {
+  + {static} Main(args : string[]) : void
+  + {static} MostrarBebida(bebida : Bebida) : void
+}
+
+' Relaciones de herencia
+CafeSimple --|> Bebida
+DecoradorBebida --|> Bebida
+Leche --|> DecoradorBebida
+Azucar --|> DecoradorBebida
+
+' Composición (el decorador CONTIENE una bebida)
+DecoradorBebida *--> Bebida : contiene >
+
+' Uso
+Program ..> Bebida : <<usa>>
+
+note right of Bebida
+  **Componente Base**
+  Define la interfaz común
+  para objetos concretos
+  y decoradores
+end note
+
+note left of CafeSimple
+  **Componente Concreto**
+  El objeto base que
+  será decorado
+end note
+
+note bottom of DecoradorBebida
+  **Decorador Base (Abstracto)**
+  
+  Clave del patrón:
+  1. Hereda de Bebida (ES-UN Bebida)
+  2. Contiene una Bebida (TIENE-UN Bebida)
+  
+  Esto permite:
+  - Sustituir una Bebida por un Decorador
+  - Envolver objetos recursivamente
+end note
+
+note right of Leche
+  **Decorador Concreto**
+  Agrega funcionalidad:
+  - Llama a base.Método()
+  - Añade su propia lógica
+  - Retorna resultado combinado
+end note
+
+@enduml
