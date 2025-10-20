@@ -1,0 +1,34 @@
+@startuml
+abstract class Bebida {
+    + ObtenerDescripcion(): string
+    + ObtenerCosto(): double
+}
+
+class CafeSimple {
+    + ObtenerDescripcion()
+    + ObtenerCosto()
+}
+
+abstract class DecoradorBebida {
+    # Bebida _bebida
+}
+
+class Leche {
+    + ObtenerDescripcion()
+    + ObtenerCosto()
+}
+
+class Azucar {
+    + ObtenerDescripcion()
+    + ObtenerCosto()
+}
+
+' Relación de Herencia: Todos son un tipo de Bebida
+Bebida <|-- CafeSimple
+Bebida <|-- DecoradorBebida
+DecoradorBebida <|-- Leche
+DecoradorBebida <|-- Azucar
+
+' Relación de Composición: El Decorador envuelve a una Bebida
+DecoradorBebida o-- Bebida : envuelve
+@enduml
