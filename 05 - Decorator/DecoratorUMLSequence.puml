@@ -1,0 +1,155 @@
+@startuml
+participant Program
+participant "miCafe\\n:Bebida" as Var
+participant ":CafeSimple" as Cafe
+participant ":Leche" as Leche
+participant ":Azucar" as Azucar
+
+activate Program
+
+== Paso 1: Crear Objeto Base ==
+
+create Cafe
+Program -> Cafe: new CafeSimple()
+
+Program -> Var: miCafe = café
+note left of Var
+  miCafe apunta a CafeSimple
+end note
+
+Program -> Program: MostrarBebida(miCafe)
+activate Program
+
+Program -> Cafe: ObtenerDescripcion()
+activate Cafe
+Cafe --> Program: "Café Negro Simple"
+deactivate Cafe
+
+Program -> Cafe: ObtenerCosto()
+activate Cafe
+Cafe --> Program: 2.0
+deactivate Cafe
+
+note left of Program
+  Console: "Costo: $2.00"
+end note
+
+deactivate Program
+
+== Paso 2: Decorar con Leche ==
+
+create Leche
+Program -> Leche: new Leche(miCafe)
+activate Leche
+Leche -> Leche: _bebida = CafeSimple
+Leche --> Program
+deactivate Leche
+
+Program -> Var: miCafe = Leche
+note left of Var
+  Estructura:
+  Leche → CafeSimple
+end note
+
+Program -> Program: MostrarBebida(miCafe)
+activate Program
+
+Program -> Leche: ObtenerDescripcion()
+activate Leche
+
+Leche -> Cafe: ObtenerDescripcion()
+activate Cafe
+Cafe --> Leche: "Café Negro Simple"
+deactivate Cafe
+
+Leche -> Leche: + ", con Leche"
+Leche --> Program: "Café Negro Simple, con Leche"
+deactivate Leche
+
+Program -> Leche: ObtenerCosto()
+activate Leche
+Leche -> Cafe: ObtenerCosto()
+activate Cafe
+Cafe --> Leche: 2.0
+deactivate Cafe
+Leche -> Leche: 2.0 + 0.5
+Leche --> Program: 2.5
+deactivate Leche
+
+note left of Program
+  Console: "Costo: $2.50"
+end note
+
+deactivate Program
+
+== Paso 3: Decorar con Azúcar ==
+
+create Azucar
+Program -> Azucar: new Azucar(miCafe)
+activate Azucar
+Azucar -> Azucar: _bebida = Leche
+Azucar --> Program
+deactivate Azucar
+
+Program -> Var: miCafe = Azucar
+note left of Var
+  Cadena completa:
+  Azucar → Leche → CafeSimple
+end note
+
+Program -> Program: MostrarBebida(miCafe)
+activate Program
+
+Program -> Azucar: ObtenerDescripcion()
+activate Azucar
+
+Azucar -> Leche: ObtenerDescripcion()
+activate Leche
+
+Leche -> Cafe: ObtenerDescripcion()
+activate Cafe
+Cafe --> Leche: "Café Negro Simple"
+deactivate Cafe
+
+Leche -> Leche: + ", con Leche"
+Leche --> Azucar: "Café Negro Simple, con Leche"
+deactivate Leche
+
+Azucar -> Azucar: + ", con Azúcar"
+Azucar --> Program: "Café Negro Simple, con Leche, con Azúcar"
+deactivate Azucar
+
+Program -> Azucar: ObtenerCosto()
+activate Azucar
+
+Azucar -> Leche: ObtenerCosto()
+activate Leche
+
+Leche -> Cafe: ObtenerCosto()
+activate Cafe
+Cafe --> Leche: 2.0
+deactivate Cafe
+
+Leche -> Leche: 2.0 + 0.5
+Leche --> Azucar: 2.5
+deactivate Leche
+
+Azucar -> Azucar: 2.5 + 0.1
+Azucar --> Program: 2.6
+deactivate Azucar
+
+note left of Program
+  Console: "Costo: $2.60"
+end note
+
+deactivate Program
+deactivate Program
+
+note over Program, Azucar #lightgreen
+  **Patrón Decorator:**
+  1. Composición dinámica
+  2. Delegación en cadena
+  3. Estructura: Azucar(Leche(CafeSimple))
+end note
+
+@enduml
