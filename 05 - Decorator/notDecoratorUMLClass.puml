@@ -1,0 +1,35 @@
+@startuml
+class Bebida {
+    # Descripcion: string
+    # Costo: double
+    + Mostrar()
+}
+
+class CafeSimple {
+    + CafeSimple()
+}
+
+class CafeConLeche {
+    + CafeConLeche()
+}
+
+class CafeConAzucar {
+    + CafeConAzucar()
+}
+
+class CafeConLecheYAzucar {
+    + CafeConLecheYAzucar()
+}
+
+Bebida <|-- CafeSimple
+Bebida <|-- CafeConLeche
+Bebida <|-- CafeConAzucar
+Bebida <|-- CafeConLecheYAzucar
+
+note bottom of CafeConLecheYAzucar
+  Si se añade un nuevo ingrediente,
+  la cantidad de clases se DUPLICA
+  (2^N combinaciones). ¡Esto es el
+  Estallido de Subclases!
+end note
+@enduml
