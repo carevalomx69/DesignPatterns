@@ -1,9 +1,9 @@
-# Guía de Laboratorio: Patrones de Diseño en C#
+# Repositorio de Patrones de Diseño en C#
 
 ## Objetivo
-Aplicar patrones de diseño en C# mediante ejemplos prácticos y actividades reflexivas.
+Comprender la utilidad y estructura de patrones de diseño en C# mediante ejemplos prácticos y documentación en UML.
 
-## Actividades
+## Patrones disponibles
 
 ### 1. Singleton
 - Ejecuta el ejemplo y verifica que solo se crea una instancia.
@@ -13,13 +13,25 @@ Aplicar patrones de diseño en C# mediante ejemplos prácticos y actividades ref
 - Crea una nueva clase de producto y extiende el creador.
 - Compara la flexibilidad del patrón frente a instanciación directa.
 
-### 3. Adapter
+### 3.Builder
+- .
+- .
+
+### 4. Adapter
 - Implementa un adaptador para una clase externa que no puede modificarse.
 - Evalúa cómo se logra compatibilidad sin alterar el código original.
 
-### 4. Decorator
+### 5. Decorator
 - Agrega nuevos decoradores al sistema de café.
 - Analiza cómo se extiende el comportamiento sin herencia.
+
+### 6. Strategy
+- .
+- .
+
+### 7. Observer
+- .
+- .
 
 ## Reflexión
 - ¿Qué patrón te pareció más útil?
@@ -27,6 +39,5 @@ Aplicar patrones de diseño en C# mediante ejemplos prácticos y actividades ref
 
 ## Evaluación
 - Correcta ejecución de los ejemplos.
-- Modificaciones funcionales propuestas.
 - Participación en la discusión y reflexión.
-
+- Incluir patrones en sus proyectos en donde se crea pertinente
