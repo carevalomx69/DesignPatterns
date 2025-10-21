@@ -4,18 +4,17 @@ Este repositorio contiene ejemplos prácticos en C# de los siguientes patrones d
 
 - Singleton
 - Factory Method
+- Builder
 - Adapter
 - Decorator
+- Strategy
+- Observer
 
-Además, se incluye una guía de laboratorio en formato Markdown para apoyar el aprendizaje de los estudiantes.
+Se incluye una guía de laboratorio en formato Markdown para apoyar el aprendizaje de los estudiantes.
 
 ## Estructura
 
-- `Singleton/`: Ejemplo funcional del patrón Singleton.
-- `FactoryMethod/`: Ejemplo funcional del patrón Factory Method.
-- `Adapter/`: Ejemplo funcional del patrón Adapter.
-- `Decorator/`: Ejemplo funcional del patrón Decorator.
-- `Laboratorio_Patrones.md`: Guía de laboratorio con actividades y criterios de evaluación.
+- `Patron/`: Archivos .cs con ejemplos del patrón y sin el patrón y archivos .puml para generar los diagramas UML (clases y secuencia)
 
 ## Autor
 
