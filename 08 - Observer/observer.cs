@@ -1,81 +1,120 @@
-// 1. Interfaz Observer
-public interface IObserver
+using System;
+using System.Collections.Generic;
+
+// 1. Interfaz Observador (Define el método de notificación)
+public interface IObservador
 {
-    void Actualizar(ISujeto sujeto);
+    void Actualizar(SujetoBolsa sujeto);
 }
 
-// 2. Interfaz Sujeto
-public interface ISujeto
+// 2. Interfaz Sujeto (Define la gestión de observadores)
+public abstract class SujetoBolsa
 {
-    void Suscribir(IObserver observer);
-    void Desuscribir(IObserver observer);
-    void Notificar();
-}
+    // Lista de clientes suscritos (relación uno a muchos)
+    private List<IObservador> _observadores = new List<IObservador>();
 
-// 3. Concrete Sujeto: Registro de Eventos
-public class EventoRegistro : ISujeto
-{
-    private List<IObserver> _observadores = new List<IObserver>();
-    public string Estado { get; private set; } = "Inicial"; // Estado (ej: Nombre del alumno inscrito)
+    public void Suscribir(IObservador observador)
+    {
+        Console.WriteLine($"[SUJETO] Observador {observador.GetType().Name} suscrito.");
+        _observadores.Add(observador);
+    }
 
-    public void Suscribir(IObserver observer) => this._observadores.Add(observer);
-    public void Desuscribir(IObserver observer) => this._observadores.Remove(observer);
+    public void Desuscribir(IObservador observador)
+    {
+        _observadores.Remove(observador);
+        Console.WriteLine($"[SUJETO] Observador {observador.GetType().Name} desuscrito.");
+    }
 
+    // Método para Notificar a todos los suscritos.
     public void Notificar()
     {
-        foreach (var observer in _observadores)
+        Console.WriteLine("\n[SUJETO] **NOTIFICANDO CAMBIO DE PRECIO A TODOS**");
+        foreach (var observador in _observadores)
         {
-            observer.Actualizar(this);
+            observador.Actualizar(this); // Polimorfismo: Llama al método 'Actualizar' de cada uno.
         }
-    }
-
-    // Método que provoca el cambio de estado (el evento)
-    public void RegistrarAsistencia(string nombreAlumno)
-    {
-        this.Estado = $"Asistencia de {nombreAlumno} registrada.";
-        Console.WriteLine($"\nSUJETO: Se ha registrado una nueva asistencia: {nombreAlumno}");
-        this.Notificar();
     }
 }
 
-// 4. Concrete Observer A: Generar Constancia
-public class GeneradorConstancias : IObserver
+// 3. Sujeto Concreto (Mantiene el estado y dispara las notificaciones)
+public class CotizacionAccion : SujetoBolsa
 {
-    public void Actualizar(ISujeto sujeto)
+    private string _simbolo;
+    private decimal _precio;
+
+    public CotizacionAccion(string simbolo, decimal precio)
     {
-        if (sujeto is EventoRegistro evento)
+        _simbolo = simbolo;
+        _precio = precio;
+        Console.WriteLine($"Cotización creada para {_simbolo} con precio inicial ${_precio:N2}");
+    }
+
+    public string Simbolo => _simbolo;
+    public decimal Precio => _precio;
+
+    // Método que cambia el estado y activa el patrón Observer.
+    public void CambiarPrecio(decimal nuevoPrecio)
+    {
+        if (_precio != nuevoPrecio)
         {
-            Console.WriteLine($"GeneradorConstancias: Procesando... {evento.Estado}");
-            // Lógica para generar y firmar constancia...
+            _precio = nuevoPrecio;
+            Console.WriteLine($"\n[COTIZACIÓN] El precio de {_simbolo} ha cambiado a: ${_precio:N2}");
+            Notificar(); // <-- ¡El Sujeto notifica sin saber a quién!
         }
     }
 }
 
-// 5. Concrete Observer B: Notificar Email
-public class NotificadorEmail : IObserver
+// 4. Observador Concreto 1 (Cliente móvil)
+public class ClienteMovil : IObservador
 {
-    public void Actualizar(ISujeto sujeto)
+    public void Actualizar(SujetoBolsa sujeto)
     {
-        if (sujeto is EventoRegistro evento)
+        if (sujeto is CotizacionAccion cotizacion)
         {
-            Console.WriteLine($"NotificadorEmail: Enviando correo... {evento.Estado}");
-            // Lógica para enviar email de bienvenida o agradecimiento...
+            Console.WriteLine($"  [ClienteMovil]: Notificación recibida! Nuevo precio: ${cotizacion.Precio:N2}.");
         }
     }
 }
 
-// Uso:
-/*
-var registro = new EventoRegistro();
-var constancias = new GeneradorConstancias();
-var email = new NotificadorEmail();
+// 5. Observador Concreto 2 (Cliente de escritorio, solo reacciona a precios bajos)
+public class ClienteEscritorio : IObservador
+{
+    public void Actualizar(SujetoBolsa sujeto)
+    {
+        if (sujeto is CotizacionAccion cotizacion)
+        {
+            if (cotizacion.Precio < 100m)
+            {
+                Console.WriteLine($"  [ClienteEscritorio]: ¡Alerta de compra! Precio bajo: ${cotizacion.Precio:N2}");
+            }
+        }
+    }
+}
 
-registro.Suscribir(constancias);
-registro.Suscribir(email);
+// Clase principal para la ejecución.
+class Program
+{
+    static void Main(string[] args)
+    {
+        // El Sujeto
+        CotizacionAccion google = new CotizacionAccion("GOOGL", 150.00m);
 
-registro.RegistrarAsistencia("Juan Pérez");
+        // Los Observadores
+        IObservador movil = new ClienteMovil();
+        IObservador escritorio = new ClienteEscritorio();
 
-registro.Desuscribir(email);
+        // Suscripción
+        google.Suscribir(movil);
+        google.Suscribir(escritorio);
 
-registro.RegistrarAsistencia("María López");
-*/
+        // --- Evento 1: Precio alto (ambos reciben notificación, solo Escritorio filtra) ---
+        google.CambiarPrecio(155.50m); 
+
+        // --- Evento 2: Precio bajo (el ClienteEscritorio muestra su lógica de alerta) ---
+        google.CambiarPrecio(95.00m); 
+
+        // --- Desuscripción y Evento 3: El cliente móvil ya no recibe la notificación ---
+        google.Desuscribir(movil);
+        google.CambiarPrecio(80.00m);
+    }
+}
