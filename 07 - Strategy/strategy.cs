@@ -1,65 +1,96 @@
-// 1. Interfaz Strategy
-public interface IEstrategiaCalculoViabilidad
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+// Producto a manipular
+public class Producto
 {
-    string CalcularViabilidad(double inversionInicial, double flujoCajaPromedio);
+    public string Nombre { get; set; }
+    public decimal Precio { get; set; }
+    public override string ToString() => $"[Producto: {Nombre}, ${Precio:N2}]";
 }
 
-// 2. Concrete Strategy A: VPN
-public class EstrategiaVPN : IEstrategiaCalculoViabilidad
+// 1. Interfaz de Estrategia (Define el contrato para todos los algoritmos).
+public interface IEstrategiaOrdenamiento
 {
-    public string CalcularViabilidad(double inversionInicial, double flujoCajaPromedio)
+    void Ordenar(List<Producto> productos);
+}
+
+// 2. Estrategia Concreta 1: Ordenar por Nombre
+public class OrdenarPorNombre : IEstrategiaOrdenamiento
+{
+    public void Ordenar(List<Producto> productos)
     {
-        // Lógica simplificada de VPN para el ejemplo
-        if (flujoCajaPromedio * 5 > inversionInicial) // Asumimos 5 periodos
+        Console.WriteLine("\n[Estrategia] Ordenando por Nombre (A-Z).");
+        // Lógica específica para ordenar por nombre
+        productos.Sort((p1, p2) => string.Compare(p1.Nombre, p2.Nombre));
+    }
+}
+
+// 3. Estrategia Concreta 2: Ordenar por Precio
+public class OrdenarPorPrecio : IEstrategiaOrdenamiento
+{
+    public void Ordenar(List<Producto> productos)
+    {
+        Console.WriteLine("\n[Estrategia] Ordenando por Precio (menor a mayor).");
+        // Lógica específica para ordenar por precio
+        productos.Sort((p1, p2) => p1.Precio.CompareTo(p2.Precio));
+    }
+}
+
+// 4. Contexto (La clase que utiliza la Estrategia).
+public class Contexto
+{
+    private IEstrategiaOrdenamiento _estrategia; // Referencia a la estrategia
+    private List<Producto> _listaProductos;
+
+    public Contexto(List<Producto> productos)
+    {
+        _listaProductos = productos;
+    }
+
+    // Método para establecer la estrategia dinámicamente.
+    public void SetEstrategia(IEstrategiaOrdenamiento estrategia)
+    {
+        Console.WriteLine($"--- Contexto: Cambiando Estrategia a {estrategia.GetType().Name} ---");
+        _estrategia = estrategia;
+    }
+
+    // El Contexto delega la ejecución del algoritmo a la estrategia actual.
+    public void EjecutarOrdenamiento()
+    {
+        if (_estrategia == null)
         {
-            return $"VPN Positivo. Proyecto Viable. (Ficticio: {flujoCajaPromedio * 5 - inversionInicial:C})";
+            Console.WriteLine("Contexto: No se ha establecido una estrategia de ordenamiento.");
+            return;
         }
-        return "VPN Negativo. Proyecto NO Viable.";
+        
+        _estrategia.Ordenar(_listaProductos); // Delegación
+        Console.WriteLine("Resultado:");
+        _listaProductos.ForEach(p => Console.WriteLine(p));
     }
 }
 
-// 3. Concrete Strategy B: Periodo de Recuperación (PR)
-public class EstrategiaPR : IEstrategiaCalculoViabilidad
+// Clase principal para la ejecución.
+class Program
 {
-    public string CalcularViabilidad(double inversionInicial, double flujoCajaPromedio)
+    static void Main(string[] args)
     {
-        double periodoRecuperacion = inversionInicial / flujoCajaPromedio;
-        return $"Periodo de Recuperación: {periodoRecuperacion:F2} años.";
+        var lista = new List<Producto>
+        {
+            new Producto { Nombre = "Monitor", Precio = 250.00m },
+            new Producto { Nombre = "Teclado", Precio = 45.00m },
+            new Producto { Nombre = "Mouse", Precio = 15.00m }
+        };
+
+        Contexto contexto = new Contexto(lista);
+
+        // Uso 1: Ordenar por Nombre
+        contexto.SetEstrategia(new OrdenarPorNombre());
+        contexto.EjecutarOrdenamiento();
+
+        // Uso 2: Cambiar la estrategia y ordenar por Precio
+        contexto.SetEstrategia(new OrdenarPorPrecio());
+        contexto.EjecutarOrdenamiento();
     }
 }
-
-// 4. Contexto
-public class SimuladorFinanciero
-{
-    private IEstrategiaCalculoViabilidad _estrategia;
-
-    public SimuladorFinanciero(IEstrategiaCalculoViabilidad estrategia)
-    {
-        this._estrategia = estrategia;
-    }
-
-    public void SetEstrategia(IEstrategiaCalculoViabilidad estrategia)
-    {
-        this._estrategia = estrategia;
-    }
-
-    public void EjecutarCalculo(double inversionInicial, double flujoCajaPromedio)
-    {
-        string resultado = this._estrategia.CalcularViabilidad(inversionInicial, flujoCajaPromedio);
-        Console.WriteLine($"Resultado con {this._estrategia.GetType().Name}: {resultado}");
-    }
-}
-
-// Uso:
-/*
-double inv = 10000;
-double flujo = 3000;
-
-// Usar la estrategia de VPN
-SimuladorFinanciero simulador = new SimuladorFinanciero(new EstrategiaVPN());
-simulador.EjecutarCalculo(inv, flujo);
-
-// Cambiar a la estrategia de Periodo de Recuperación en tiempo de ejecución
-simulador.SetEstrategia(new EstrategiaPR());
-simulador.EjecutarCalculo(inv, flujo);
-*/
