@@ -10,8 +10,8 @@ public class Producto
     public override string ToString() => $"[Producto: {Nombre}, ${Precio:N2}]";
 }
 
-// 1. Contexto (¡Ahora maneja toda la lógica del algoritmo!)
-// Esto viola el Principio de Responsabilidad Única (SRP).
+// 1. Contexto (Ahora maneja toda la lógica del algoritmo)
+// Esto rompe el Principio de Responsabilidad Única (SRP).
 public class Contexto
 {
     private List<Producto> _listaProductos;
@@ -21,12 +21,12 @@ public class Contexto
         _listaProductos = productos;
     }
 
-    // El método ahora recibe un parámetro que define el algoritmo a usar.
+    // El método recibe un parámetro que define el algoritmo a usar.
     public void EjecutarOrdenamiento(string tipoOrdenamiento)
     {
         Console.WriteLine($"\n--- Contexto: Ejecutando ordenamiento por: {tipoOrdenamiento} ---");
 
-        // 2. Sentencia condicional grande (El Anti-Patrón)
+        // 2. Sentencia condicional grande (Anti-Patrón)
         switch (tipoOrdenamiento)
         {
             case "Nombre":
