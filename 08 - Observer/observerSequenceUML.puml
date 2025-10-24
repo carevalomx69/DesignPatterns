@@ -1,0 +1,44 @@
+@startuml
+actor Program
+participant CotizacionAccion as Sujeto
+participant ClienteMovil as Movil
+participant ClienteEscritorio as Escritorio
+
+== Inicialización ==
+Program -> Sujeto : new CotizacionAccion("GOOGL", 150.00m)
+Program -> Movil : new ClienteMovil()
+Program -> Escritorio : new ClienteEscritorio()
+
+== Suscripción ==
+Program -> Sujeto : Suscribir(Movil)
+note over Sujeto : Agrega Movil a la lista de observadores
+Program -> Sujeto : Suscribir(Escritorio)
+note over Sujeto : Agrega Escritorio a la lista de observadores
+
+== Evento 1: Precio alto ==
+Program -> Sujeto : CambiarPrecio(155.50m)
+Sujeto -> Sujeto : Actualiza _precio
+Sujeto -> Sujeto : Notificar()
+Sujeto -> Movil : Actualizar(this)
+Movil -> Program : Console.WriteLine("Notificación recibida!")
+Sujeto -> Escritorio : Actualizar(this)
+Escritorio -> Program : (Filtra: precio > 100, no alerta)
+
+== Evento 2: Precio bajo ==
+Program -> Sujeto : CambiarPrecio(95.00m)
+Sujeto -> Sujeto : Actualiza _precio
+Sujeto -> Sujeto : Notificar()
+Sujeto -> Movil : Actualizar(this)
+Movil -> Program : Console.WriteLine("Notificación recibida!")
+Sujeto -> Escritorio : Actualizar(this)
+Escritorio -> Program : Console.WriteLine("¡Alerta de compra!")
+
+== Desuscripción y Evento 3 ==
+Program -> Sujeto : Desuscribir(Movil)
+note over Sujeto : Elimina Movil de la lista
+Program -> Sujeto : CambiarPrecio(80.00m)
+Sujeto -> Sujeto : Actualiza _precio
+Sujeto -> Sujeto : Notificar()
+Sujeto -> Escritorio : Actualizar(this)
+Escritorio -> Program : Console.WriteLine("¡Alerta de compra!")
+@enduml
