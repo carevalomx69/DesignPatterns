@@ -1,0 +1,37 @@
+@startuml
+class Program {
+    + Main(args : string[])
+}
+
+class Contexto {
+    - IEstrategiaOrdenamiento _estrategia
+    - List<Producto> _listaProductos
+    + Contexto(List<Producto> productos)
+    + SetEstrategia(IEstrategiaOrdenamiento estrategia)
+    + EjecutarOrdenamiento()
+}
+
+interface IEstrategiaOrdenamiento {
+    + Ordenar(List<Producto> productos)
+}
+
+class OrdenarPorNombre {
+    + Ordenar(List<Producto> productos)
+}
+
+class OrdenarPorPrecio {
+    + Ordenar(List<Producto> productos)
+}
+
+class Producto {
+    + Nombre : string
+    + Precio : decimal
+    + ToString() : string
+}
+
+Program --> Contexto : «crea y usa»
+Contexto --> IEstrategiaOrdenamiento : «usa»
+IEstrategiaOrdenamiento <|.. OrdenarPorNombre : «implementa»
+IEstrategiaOrdenamiento <|.. OrdenarPorPrecio : «implementa»
+Contexto --> Producto : «contiene»
+@enduml
