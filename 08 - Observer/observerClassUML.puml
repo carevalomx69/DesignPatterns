@@ -1,0 +1,39 @@
+@startuml
+class Program {
+    + Main(args : string[])
+}
+
+interface IObservador {
+    + Actualizar(SujetoBolsa sujeto)
+}
+
+abstract class SujetoBolsa {
+    - List<IObservador> _observadores
+    + Suscribir(IObservador observador)
+    + Desuscribir(IObservador observador)
+    + Notificar()
+}
+
+class CotizacionAccion {
+    - _simbolo : string
+    - _precio : decimal
+    + CotizacionAccion(simbolo : string, precio : decimal)
+    + Simbolo : string
+    + Precio : decimal
+    + CambiarPrecio(nuevoPrecio : decimal)
+}
+
+class ClienteMovil {
+    + Actualizar(SujetoBolsa sujeto)
+}
+
+class ClienteEscritorio {
+    + Actualizar(SujetoBolsa sujeto)
+}
+
+Program --> CotizacionAccion : «crea y usa»
+CotizacionAccion --|> SujetoBolsa : «hereda»
+SujetoBolsa --> IObservador : «notifica»
+IObservador <|.. ClienteMovil : «implementa»
+IObservador <|.. ClienteEscritorio : «implementa»
+@enduml
