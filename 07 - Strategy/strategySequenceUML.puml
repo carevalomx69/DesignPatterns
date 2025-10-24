@@ -1,0 +1,29 @@
+@startuml
+actor Program
+participant Contexto
+participant "OrdenarPorNombre" as EstrategiaNombre
+participant "OrdenarPorPrecio" as EstrategiaPrecio
+participant "ListaProductos" as Lista
+
+== Inicialización ==
+Program -> Lista : Crear lista de productos
+Program -> Contexto : new Contexto(lista)
+
+== Ordenamiento 1: Por Nombre ==
+Program -> Contexto : SetEstrategia(new OrdenarPorNombre())
+Contexto -> EstrategiaNombre : (instancia creada)
+Contexto -> Contexto : _estrategia = OrdenarPorNombre
+Program -> Contexto : EjecutarOrdenamiento()
+Contexto -> EstrategiaNombre : Ordenar(_listaProductos)
+EstrategiaNombre -> Lista : Sort por Nombre (A-Z)
+Contexto -> Program : Imprimir resultado
+
+== Ordenamiento 2: Por Precio ==
+Program -> Contexto : SetEstrategia(new OrdenarPorPrecio())
+Contexto -> EstrategiaPrecio : (instancia creada)
+Contexto -> Contexto : _estrategia = OrdenarPorPrecio
+Program -> Contexto : EjecutarOrdenamiento()
+Contexto -> EstrategiaPrecio : Ordenar(_listaProductos)
+EstrategiaPrecio -> Lista : Sort por Precio (menor a mayor)
+Contexto -> Program : Imprimir resultado
+@enduml
