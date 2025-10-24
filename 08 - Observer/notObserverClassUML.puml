@@ -1,0 +1,26 @@
+@startuml
+class Program {
+    + Main(args : string[])
+}
+
+class CotizacionAccion {
+    - _simbolo : string
+    - _precio : decimal
+    - _clienteMovil : ClienteMovil
+    - _clienteEscritorio : ClienteEscritorio
+    + CotizacionAccion(simbolo : string, precio : decimal)
+    + CambiarPrecio(nuevoPrecio : decimal)
+}
+
+class ClienteMovil {
+    + RecibirActualizacion(simbolo : string, precio : decimal)
+}
+
+class ClienteEscritorio {
+    + ProcesarAlerta(simbolo : string, precio : decimal)
+}
+
+Program --> CotizacionAccion : «crea y usa»
+CotizacionAccion --> ClienteMovil : «notifica directamente»
+CotizacionAccion --> ClienteEscritorio : «notifica directamente»
+@enduml
