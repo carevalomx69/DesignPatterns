@@ -1,15 +1,16 @@
 public class Logger {
 
-    // Campo estatico y final que contiene la unica instancia.
+    // Campo estatico que contiene la unica instancia.
     private static final Logger INSTANCIA = new Logger();
 
     private int logCount = 0;
 
-    // Constructor privado, para impedir la instanciacion desde fuera.
+    // Constructor privado, para impedir que se cree otro Logger desde fuera.
     private Logger() {
-        System.out.println("Logger: Se ha creado la unica instancia!");
+        System.out.println("Logger: se creo la unica instancia.");
     }
 
+    // Unica forma de obtener el Logger.
     public static Logger getInstancia() {
         return INSTANCIA;
     }

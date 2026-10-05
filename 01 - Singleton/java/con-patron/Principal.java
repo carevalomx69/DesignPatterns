@@ -11,7 +11,7 @@ public class Principal {
         if (logger1 == logger2) {
             System.out.println("\nCOMPROBACION: logger1 y logger2 son la MISMA instancia.");
         } else {
-            System.out.println("\nERROR: se crearon multiples instancias.");
+            System.out.println("\nCOMPROBACION: logger1 y logger2 son instancias DISTINTAS.");
         }
 
         System.out.println("--- Finalizando aplicacion ---");
