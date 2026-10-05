@@ -14,7 +14,7 @@ Cada práctica sigue la misma necesidad a través de tres escalas.
 | Java | El patrón como clases y objetos |
 | Arquitectura | Dónde aparece, o se diluye, en el [Taller de Arquitecturas de Software](https://github.com/carevalomx69/Taller-de-Arquitecturas-de-Software) |
 
-Un patrón se diluye cuando el lenguaje o la arquitectura ya resuelve por sí
+Un patrón se "diluye" cuando el lenguaje o la arquitectura ya resuelve por sí
 solo lo que el patrón resolvía. Cada práctica tiene una tabla donde el
 equipo compara casos y justifica su juicio con evidencia.
 
