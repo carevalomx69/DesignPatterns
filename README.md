@@ -2,7 +2,7 @@
 
 Material del curso de Diseño de Software (UAA). Cada carpeta explica un
 patrón y reúne los archivos de su práctica. La idea de fondo es aprender a
-reconocer un patrón y a evaluar cuándo conviene, no a copiar código.
+reconocer un patrón y a evaluar cuándo conviene usarlo, no solamente copiar código.
 
 ## Cómo está planteado
 
