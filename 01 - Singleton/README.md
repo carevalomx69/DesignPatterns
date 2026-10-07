@@ -44,7 +44,7 @@ no pasar un objeto de una parte a otra, conviene pensarlo dos veces.
 ├── README.md
 ├── java/
 │   ├── sin-patron/        Logger.java y Principal.java
-│   └── con-patron/        Logger.java, Principal.java y ConError.java
+│   └── con-patron/        Logger.java y Principal.java
 └── referencia-csharp/     versión original en C#, solo de consulta
 ```
 
@@ -79,13 +79,7 @@ puedes abrir `Principal.java` y presionar *Run* sobre el método `main`.
 Abre una versión a la vez (menú *File > Open Folder*) para que las dos
 clases `Logger` no se confundan entre sí.
 
-### Optativo. Intentar romperlo
-
-En `java/con-patron`, compila `ConError.java` con `javac Logger.java ConError.java`
-y lee el mensaje de error. ¿Qué línea de `Logger` es la responsable? Este
-archivo falla a propósito, así que el editor lo marcará en rojo.
-
-## Patrones usados en el taller de arquitecturas (sin haberlos conocido aun) 
+## Patrones usados en el taller de arquitecturas (sin haberlos conocido aun)
 
 En el [Taller de Arquitecturas de Software](https://github.com/carevalomx69/Taller-de-Arquitecturas-de-Software)
 hay tres lugares donde se comparte una sola conexión. Nadie escribió la
@@ -100,15 +94,23 @@ palabra Singleton ni usó un constructor privado, pero la idea es la misma.
 Ábrelos y revisa el código. Piensa por qué en JavaScript no hizo falta una
 clase con constructor privado.
 
-## Qué deberías observar
+## Qué gana y qué cuesta usar Singleton
 
-- Sin el patrón, cada `new` produce un objeto independiente, y cada uno
-  lleva su propia cuenta.
-- Con el patrón, no se puede crear otro con `new` desde fuera (el
-  compilador lo avisa, como puedes ver en el ejercicio optativo).
-- Lo que el patrón agrega a la clase es poco, pero cambia cómo se usa.
-- La misma necesidad se resuelve de maneras distintas según el lenguaje o
-  la arquitectura.
+| Aspecto | Sin patrón | Con patrón |
+|---|---|---|
+| Cuántos `Logger` existen | Tantos como `new` se ejecuten. En la práctica, dos | Uno solo, sin importar cuántas veces se pida |
+| La cuenta de eventos | Cada `Logger` cuenta por separado y los dos mensajes salen con `[1]` | Se comparte, y los mensajes salen con `[1]` y `[2]` |
+| Quién decide cuándo se crea | Cualquier parte del programa, cuando quiera | La propia clase, una vez |
+| Cómo se obtiene el objeto | `new Logger()` | `Logger.getInstancia()` |
+| Qué pasa si alguien escribe `new Logger()` | Funciona y crea otro objeto | No compila. El error es `Logger() has private access in Logger` |
+| Cambio en el código que lo usa | Ninguno | Una línea por cada `new Logger()` |
+| Cambio en la clase `Logger` | Ninguno | Tres piezas, el campo estático, el constructor privado y `getInstancia()` |
+| Costo | Ninguno, pero el riesgo de duplicados queda abierto | Todo el programa queda atado al nombre `Logger` y a su acceso global |
+
+La última fila es la razón por la que Singleton se usa con cuidado. Se gana
+una garantía de instancia única, y se paga con un acceso global del que
+dependen muchas partes del código. Si compartir el objeto es un requisito
+del problema, la garantía vale la pena. Si es solo una comodidad, no.
 
 ## Errores comunes
 

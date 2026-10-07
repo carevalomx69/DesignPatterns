@@ -12,7 +12,7 @@ public class Logger {
 
     // PIEZA 2 del patron: constructor PRIVADO. Solo la propia clase puede
     // ejecutarlo (lo hace una vez, en la linea de INSTANCIA). Desde fuera,
-    // "new Logger()" ya no compila. Esto es lo que ConError.java intenta.
+    // "new Logger()" ya no compila. Si lo intentas, el compilador responde "Logger() has private access".
     private Logger() {
         System.out.println("Logger: se creo la unica instancia.");
     }
