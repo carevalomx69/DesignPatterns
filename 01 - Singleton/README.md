@@ -85,7 +85,7 @@ En `java/con-patron`, compila `ConError.java` con `javac Logger.java ConError.ja
 y lee el mensaje de error. ¿Qué línea de `Logger` es la responsable? Este
 archivo falla a propósito, así que el editor lo marcará en rojo.
 
-## Aquí ya lo usaste sin darte cuenta
+## Patrones aplicados en las practicas de arquitectura (sin haberlos conocido aun) 
 
 En el [Taller de Arquitecturas de Software](https://github.com/carevalomx69/Taller-de-Arquitecturas-de-Software)
 hay tres lugares donde se comparte una sola conexión. Nadie escribió la
