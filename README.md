@@ -6,8 +6,8 @@ reconocer un patrón y a evaluar cuándo conviene usarlo, no solamente copiar c�
 
 ## Cómo está planteado
 
-Cada práctica compara código sin el patrón y con el patrón, en Java. C
-queda como contraste optativo. Cuando aplica, una caja del README señala
+Cada práctica compara código sin el patrón y con el patrón, en Java.
+Cuando aplica, una caja del README señala
 dónde ya apareció la idea en el [Taller de Arquitecturas de Software](https://github.com/carevalomx69/Taller-de-Arquitecturas-de-Software).
 El entregable es una reflexión corta sobre cuándo conviene usar el patrón
 y cuándo no.
@@ -16,7 +16,7 @@ y cuándo no.
 
 | # | Patrón | Estado | Carpeta |
 |---|---|---|---|
-| 1 | Singleton | Práctica en Java, con C optativo y pistas del Taller | [01 - Singleton](01%20-%20Singleton/) |
+| 1 | Singleton | Práctica en Java y pistas del Taller | [01 - Singleton](01%20-%20Singleton/) |
 | 2 | Factory Method | Explicación y ejemplos en C#. Práctica por rediseñar | [02 - Factory_Method](02%20-%20Factory_Method/) |
 | 3 | Builder | Explicación y ejemplos en C#. Práctica por rediseñar | [03 - Builder](03%20-%20Builder/) |
 | 4 | Adapter | Explicación y ejemplos en C#. Práctica por rediseñar | [04 - Adapter](04%20-%20Adapter/) |
@@ -33,15 +33,13 @@ NN - Patron/
                            y sus diagramas en PlantUML
 ```
 
-La carpeta de Singleton, que ya tiene práctica rediseñada, agrega `java/`,
-`c/` (optativo) y `diagramas/`.
+La carpeta de Singleton, que ya tiene práctica rediseñada, agrega `java/`.
 
 ## Diagramas
 
 Los diagramas de los README están en Mermaid, que GitHub muestra
-directamente. Los archivos `.puml` se generan con PlantUML. En
-`01 - Singleton/diagramas/` hay las mismas figuras en ambos formatos, con
-su exportación a SVG, para comparar.
+directamente. Los archivos `.puml` de `referencia-csharp/` son los
+originales, solo de consulta.
 
 ## Referencias
 
