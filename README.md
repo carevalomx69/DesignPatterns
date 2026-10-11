@@ -77,6 +77,32 @@ También influye el lenguaje, pues en lenguajes dinámicos varios patrones se
 vuelven más simples o desaparecen como estructura aparte (Norvig, 1996). Lo
 verás en la práctica de Singleton, con el caso de JavaScript.
 
+## SOLID. Cinco guías, no cinco mandamientos
+
+SOLID es un conjunto de cinco principios de diseño orientado a objetos que
+formuló y difundió Robert C. Martin. Una exposición completa está en Martin
+(2017). Se mencionan mucho junto a los patrones porque describen las
+ventajas que los patrones suelen buscar. La tabla
+muestra cada principio y dónde lo encontrarás en este taller.
+
+| Principio | Qué dice | En este taller |
+|---|---|---|
+| **S**. Responsabilidad única | Una clase debe tener una sola razón para cambiar | Builder saca de la clase el trabajo de armarse. Adapter concentra la traducción hacia un proveedor en una sola clase |
+| **O**. Abierto/cerrado | Se debe poder extender el comportamiento sin modificar el código que ya funciona | Factory Method, Strategy y Decorator. Agregar un formato o un algoritmo nuevo es sumar una clase, no editar las existentes |
+| **L**. Sustitución de Liskov | Un subtipo debe poder usarse donde se espera su tipo base sin que nada se rompa | Lo suponen todos los patrones que cambian una implementación por otra, como Strategy, Decorator y Factory Method |
+| **I**. Segregación de interfaces | Un cliente no debe depender de métodos que no usa | Adapter ofrece al cliente solo la interfaz que necesita, sin la del proveedor completa. Observer suele exigir a sus observadores una interfaz mínima |
+| **D**. Inversión de dependencias | El código importante debe depender de abstracciones, no de clases concretas | Factory Method, Strategy y Adapter. `procesar()` depende de `Documento`, no de `DocumentoPDF`. Singleton lo tensiona, porque todo el programa depende del nombre `Logger` y de su acceso global |
+
+Conviene tomarlos como criterios para pensar y no como reglas que se
+cumplen o se incumplen. Un principio aplicado sin que el problema lo pida
+produce lo mismo que un patrón aplicado de más, que son capas y clases que
+nadie necesita. A veces dos principios tiran en direcciones contrarias. Por
+ejemplo, el abierto/cerrado invita a agregar abstracciones por si acaso, y
+YAGNI invita a no hacerlo hasta que haga falta. Decidir entre ambos es parte
+del trabajo de quien diseña. También existe KISS, que pide mantener las
+soluciones tan simples como el problema lo permita, y que sirve de
+contrapeso a los demás.
+
 ## Cómo está planteado el taller
 
 Cada práctica sigue la misma secuencia, pensada para ser corta.
@@ -100,7 +126,7 @@ diferencia entre ellas.
 | 1 | Singleton | Creacional | Práctica en Java y pistas del Taller | [01 - Singleton](01%20-%20Singleton/) |
 | 2 | Factory Method | Creacional | Práctica en Java y pistas del Taller | [02 - Factory_Method](02%20-%20Factory_Method/) |
 | 3 | Builder | Creacional | Práctica en Java y pistas del Taller | [03 - Builder](03%20-%20Builder/) |
-| 4 | Adapter | Estructural | Explicación y ejemplos en C#. Práctica por rediseñar | [04 - Adapter](04%20-%20Adapter/) |
+| 4 | Adapter | Estructural | Práctica en Java y pistas del Taller | [04 - Adapter](04%20-%20Adapter/) |
 | 5 | Decorator | Estructural | Explicación y ejemplos en C#. Práctica por rediseñar | [05 - Decorator](05%20-%20Decorator/) |
 | 6 | Strategy | Comportamental | Explicación y ejemplos en C#. Práctica por rediseñar | [06 - Strategy](06%20-%20Strategy/) |
 | 7 | Observer | Comportamental | Explicación y ejemplos en C#. Práctica por rediseñar | [07 - Observer](07%20-%20Observer/) |
@@ -131,6 +157,9 @@ Gamma, E., Helm, R., Johnson, R. y Vlissides, J. (1994). *Design Patterns:
 Elements of Reusable Object-Oriented Software*. Addison-Wesley.
 
 Kerievsky, J. (2004). *Refactoring to Patterns*. Addison-Wesley.
+
+Martin, R. C. (2017). *Clean Architecture: A Craftsman's Guide to Software
+Structure and Design*. Prentice Hall.
 
 Norvig, P. (1996). *Design Patterns in Dynamic Languages* [Presentación].
 https://norvig.com/design-patterns/
