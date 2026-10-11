@@ -99,7 +99,7 @@ diferencia entre ellas.
 |---|---|---|---|---|
 | 1 | Singleton | Creacional | Práctica en Java y pistas del Taller | [01 - Singleton](01%20-%20Singleton/) |
 | 2 | Factory Method | Creacional | Práctica en Java y pistas del Taller | [02 - Factory_Method](02%20-%20Factory_Method/) |
-| 3 | Builder | Creacional | Explicación y ejemplos en C#. Práctica por rediseñar | [03 - Builder](03%20-%20Builder/) |
+| 3 | Builder | Creacional | Práctica en Java y pistas del Taller | [03 - Builder](03%20-%20Builder/) |
 | 4 | Adapter | Estructural | Explicación y ejemplos en C#. Práctica por rediseñar | [04 - Adapter](04%20-%20Adapter/) |
 | 5 | Decorator | Estructural | Explicación y ejemplos en C#. Práctica por rediseñar | [05 - Decorator](05%20-%20Decorator/) |
 | 6 | Strategy | Comportamental | Explicación y ejemplos en C#. Práctica por rediseñar | [06 - Strategy](06%20-%20Strategy/) |
