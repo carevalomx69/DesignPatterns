@@ -43,13 +43,12 @@ detrás de los demás.
 
 ## Un modelo mental. Herramienta, no mandamiento
 
-Un patrón es una herramienta de una caja de herramientas. Un martillo es muy
-útil, pero no por eso se usa para atornillar. Aplicar un patrón porque "así
+Un patrón es una herramienta más de una caja de herramientas. Aplicar un patrón porque "así
 se hace", sin que el problema lo pida, es **sobreingeniería**. El resultado
 es código con más clases, más capas y más indirección de las que el problema
 necesita, que cuesta más de entender y de mantener sin dar nada a cambio.
 
-Un ejemplo típico es montar un Strategy o un Observer completo para algo que
+Un ejemplo típico es montar un patrón Strategy o un Observer completo para algo que
 resuelve un simple `if/else`. Los principios de diseño (SOLID, KISS, YAGNI)
 sufren el mismo riesgo cuando se aplican "por la regla" y no por el contexto.
 YAGNI, por ejemplo, recuerda que no conviene construir hoy lo que quizá se
@@ -71,11 +70,10 @@ flowchart TD
 
 Esto no significa que los patrones hayan perdido valor. Singleton o Factory
 Method siguen siendo muy usados. Otros, como Interpreter o Visitor, aparecen
-con menos frecuencia y en casos específicos. Lo que se valora hoy es el
-criterio de quien diseña, más que la aplicación automática del catálogo.
+con menos frecuencia y en casos específicos. Lo que se valora hoy es **el
+criterio de quien diseña**, más que la aplicación automática del catálogo.
 También influye el lenguaje, pues en lenguajes dinámicos varios patrones se
-vuelven más simples o desaparecen como estructura aparte (Norvig, 1996). Lo
-verás en la práctica de Singleton, con el caso de JavaScript.
+vuelven más simples o desaparecen como estructura aparte (Norvig, 1996).
 
 ## SOLID. Cinco guías, no cinco mandamientos
 
