@@ -41,7 +41,7 @@ El programa de la unidad es amplio. Este taller cubre siete patrones, los
 más representativos de cada familia, con el objetivo de reconocer la lógica
 detrás de los demás.
 
-## Un patrón es un modelo mental, una herramienta, pero no es obligatorio aplicarlos
+## Un patrón es un modelo mental, una herramienta, pero no es obligatorio aplicarlo
 
 Un patrón es una herramienta más de una caja de herramientas. Aplicar un patrón porque "así
 se hace", sin que el problema lo pida, es **sobreingeniería**. El resultado
