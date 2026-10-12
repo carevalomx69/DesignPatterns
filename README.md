@@ -80,16 +80,22 @@ vuelven más simples o desaparecen como estructura aparte (Norvig, 1996).
 SOLID es un conjunto de cinco principios de diseño orientado a objetos que
 formuló y difundió Robert C. Martin. Una exposición completa está en Martin
 (2017). Se mencionan mucho junto a los patrones porque describen las
-ventajas que los patrones suelen buscar. La tabla
-muestra cada principio y dónde se encuentra en el taller.
+ventajas que los patrones suelen buscar. Los principios se formularon para el diseño orientado a objetos, pero las
+ideas de fondo son más antiguas y también valen en programación estructurada.
+La cohesión y el acoplamiento los describieron Stevens, Myers y Constantine
+(1974), y la idea de ocultar un detalle de diseño detrás de una interfaz
+estable la propuso Parnas (1972). La tabla muestra cada principio, cómo se
+traduce a funciones y módulos, y dónde se encuentra en el taller. La
+columna estructurada es una analogía para entender la idea, no una
+equivalencia exacta.
 
-| Principio | Qué dice | En este taller |
-|---|---|---|
-| **S**. Responsabilidad única | Una clase debe tener una sola razón para cambiar | Builder saca de la clase el trabajo de armarse. Adapter concentra la traducción hacia un proveedor en una sola clase |
-| **O**. Abierto/cerrado | Se debe poder extender el comportamiento sin modificar el código que ya funciona | Factory Method, Strategy y Decorator. Agregar un formato o un algoritmo nuevo es sumar una clase, no editar las existentes |
-| **L**. Sustitución de Liskov | Un subtipo debe poder usarse donde se espera su tipo base sin que nada se rompa | Lo suponen todos los patrones que cambian una implementación por otra, como Strategy, Decorator y Factory Method |
-| **I**. Segregación de interfaces | Un cliente no debe depender de métodos que no usa | Adapter ofrece al cliente solo la interfaz que necesita, sin la del proveedor completa. Observer suele exigir a sus observadores una interfaz mínima |
-| **D**. Inversión de dependencias | El código importante debe depender de abstracciones, no de clases concretas | Factory Method, Strategy y Adapter. `procesar()` depende de `Documento`, no de `DocumentoPDF`. Singleton lo tensiona, porque todo el programa depende del nombre `Logger` y de su acceso global |
+| Principio | Qué dice | En programación estructurada | En este taller |
+|---|---|---|---|
+| **S**. Responsabilidad única | Una clase debe tener una sola razón para cambiar | Una función o un módulo hace una sola tarea bien definida. Es lo que el diseño estructurado llama cohesión | Builder saca de la clase el trabajo de armarse. Adapter concentra la traducción hacia un proveedor en una sola clase |
+| **O**. Abierto/cerrado | Se debe poder extender el comportamiento sin modificar el código que ya funciona | Agregar un caso nuevo sin reescribir lo que ya funciona, por ejemplo con una tabla de funciones o con punteros a funciones en lugar de un `switch` que crece | Factory Method, Strategy y Decorator. Agregar un formato o un algoritmo nuevo es sumar una clase, no editar las existentes |
+| **L**. Sustitución de Liskov | Un subtipo debe poder usarse donde se espera su tipo base sin que nada se rompa | Las funciones intercambiables comparten el mismo contrato, no solo la misma firma. Si dos funciones de lectura devuelven datos en formatos distintos, una no sustituye a la otra aunque compile | Lo suponen todos los patrones que cambian una implementación por otra, como Strategy, Decorator y Factory Method |
+| **I**. Segregación de interfaces | Un cliente no debe depender de métodos que no usa | Los archivos de cabecera (`.h`) o los módulos se dividen en bloques pequeños, para que cada parte del programa importe solo lo que usa | Adapter ofrece al cliente solo la interfaz que necesita, sin la del proveedor completa. Observer suele exigir a sus observadores una interfaz mínima |
+| **D**. Inversión de dependencias | El código importante debe depender de abstracciones, no de clases concretas | La lógica principal llama a una función a través de un puntero, sin nombrar la función concreta. La función `qsort` de C recibe la comparación como parámetro, y por eso ordena datos de cualquier tipo | Factory Method, Strategy y Adapter. `procesar()` depende de `Documento`, no de `DocumentoPDF`. Singleton lo tensiona, porque todo el programa depende del nombre `Logger` y de su acceso global |
 
 Conviene tomarlos como criterios para pensar y no como reglas que se
 cumplen o se incumplen. Un principio aplicado sin que el problema lo pida
@@ -161,6 +167,12 @@ Structure and Design*. Prentice Hall.
 
 Norvig, P. (1996). *Design Patterns in Dynamic Languages* [Presentación].
 https://norvig.com/design-patterns/
+
+Parnas, D. L. (1972). On the criteria to be used in decomposing systems into
+modules. *Communications of the ACM, 15*(12), 1053-1058.
+
+Stevens, W. P., Myers, G. J. y Constantine, L. L. (1974). Structured design.
+*IBM Systems Journal, 13*(2), 115-139.
 
 ## Autor
 
