@@ -38,10 +38,10 @@ tipo de problema que atienden.
 | Comportamentales (11) | Cómo se reparten responsabilidades y se comunican los objetos | Strategy, Observer | Command, Iterator, State, Template Method, Mediator, y otros |
 
 El programa de la unidad es amplio. Este taller cubre siete patrones, los
-más representativos de cada familia, para que puedas reconocer la lógica
+más representativos de cada familia, con el objetivo de reconocer la lógica
 detrás de los demás.
 
-## Un modelo mental. Herramienta, no mandamiento
+## Un patrón es un modelo mental, una herramienta, pero no es obligatorio aplicarlos
 
 Un patrón es una herramienta más de una caja de herramientas. Aplicar un patrón porque "así
 se hace", sin que el problema lo pida, es **sobreingeniería**. El resultado
@@ -81,7 +81,7 @@ SOLID es un conjunto de cinco principios de diseño orientado a objetos que
 formuló y difundió Robert C. Martin. Una exposición completa está en Martin
 (2017). Se mencionan mucho junto a los patrones porque describen las
 ventajas que los patrones suelen buscar. La tabla
-muestra cada principio y dónde lo encontrarás en este taller.
+muestra cada principio y dónde se encuentra en el taller.
 
 | Principio | Qué dice | En este taller |
 |---|---|---|
