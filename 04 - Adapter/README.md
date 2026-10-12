@@ -51,6 +51,36 @@ classDiagram
     Principal --> ProcesadorPago : usa
 ```
 
+## En programación estructurada
+
+En C el adaptador es una función envoltorio. El sistema define sus propias
+funciones, con sus nombres y sus tipos, y por dentro llaman a las del
+proveedor.
+
+```c
+/* Del proveedor (no se puede modificar) */
+void realizar_transaccion(double monto);
+int consultar_disponibilidad(void);
+
+/* Nuestra interfaz: dinero en centavos enteros */
+void procesar_pago(long centavos) {
+    realizar_transaccion(centavos / 100.0);       /* traduce el tipo y el nombre */
+}
+
+void obtener_estado(void) {
+    if (consultar_disponibilidad()) puts("El servicio esta disponible.");
+}
+```
+
+El resto del programa llama a `procesar_pago` con centavos enteros y no
+sabe que el proveedor trabaja con `double`. Si el proveedor cambia, solo se
+reescriben estas dos funciones.
+
+Lo que C no ofrece es una interfaz que declare qué funciones debe tener un
+adaptador. El compilador revisa que las firmas coincidan, pero no que el
+contrato se cumpla, que es la advertencia de Liskov en la tabla SOLID del
+README principal.
+
 ## Cuándo sí y cuándo no
 
 Si usas la biblioteca del proveedor en un solo lugar y no esperas cambiarla,

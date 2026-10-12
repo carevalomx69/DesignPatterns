@@ -52,6 +52,46 @@ classDiagram
     CreadorWord ..> DocumentoWord : new
 ```
 
+## En programación estructurada
+
+C no tiene clases ni herencia, pero se logra el mismo efecto con punteros a
+función. El producto es una estructura con las funciones que todo documento
+debe tener, y el factory method es una función que devuelve el producto
+adecuado.
+
+```c
+typedef struct { void (*abrir)(void); void (*guardar)(void); } Documento;
+
+static void abrir_pdf(void)    { puts("PDF: abriendo"); }
+static void guardar_pdf(void)  { puts("PDF: guardando"); }
+static void abrir_word(void)   { puts("Word: abriendo"); }
+static void guardar_word(void) { puts("Word: guardando"); }
+
+const Documento *crear_pdf(void) {
+    static const Documento d = { abrir_pdf, guardar_pdf };
+    return &d;
+}
+const Documento *crear_word(void) {
+    static const Documento d = { abrir_word, guardar_word };
+    return &d;
+}
+
+void procesar(const Documento *(*crear)(void)) {   /* no sabe que formatos hay */
+    const Documento *doc = crear();
+    doc->abrir();
+    doc->guardar();
+}
+```
+
+Se usa con `procesar(crear_pdf)` o con `procesar(crear_word)`. La función
+`procesar` se escribe una sola vez y no sabe qué formatos existen. Agregar
+Excel es escribir otra función `crear_excel`, sin tocarla.
+
+Lo que C no impone es que el producto esté completo. Si al armar la
+estructura se olvida un puntero, por ejemplo el de `guardar` en Word, el
+programa compila sin error y se cae al ejecutarse. En Java, olvidar un
+método abstracto es un error de compilación.
+
 ## Cuándo sí y cuándo no
 
 Con solo dos formatos y una función que los crea, un `if/else` es más

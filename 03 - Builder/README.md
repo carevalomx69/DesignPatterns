@@ -59,6 +59,33 @@ classDiagram
 `Builder` es una clase anidada dentro de `Computadora`. El diagrama las
 muestra por separado para que se lean mejor.
 
+## En programación estructurada
+
+En C no hace falta un builder para este problema. Desde C99, los
+inicializadores designados permiten nombrar los campos al crear una
+estructura, y los que no se nombran quedan en cero (`NULL` en el caso de las
+cadenas). Es el mismo beneficio que `.ram(...)` en Java, sin clases
+adicionales.
+
+```c
+typedef struct {
+    const char *cpu;
+    const char *ram;
+    const char *almacenamiento;
+    const char *tarjeta_grafica;
+} Computadora;
+
+Computadora especial = {
+    .cpu = "AMD Ryzen 7",
+    .tarjeta_grafica = "AMD Radeon RX 7900"
+};                                  /* lo que no se nombra queda en NULL */
+```
+
+Lo que C no da es lo que aporta `build()` en Java. Nada obliga a que
+`.cpu` esté presente, y ninguna función valida los datos al crear la
+estructura. Esa revisión hay que escribirla aparte. Se necesita un
+compilador que soporte C99 o una versión posterior.
+
 ## Cuándo sí y cuándo no
 
 Con dos o tres parámetros, un constructor normal es más claro y más corto.
