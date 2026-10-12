@@ -29,6 +29,41 @@ classDiagram
     Principal ..> Logger : getInstancia()
 ```
 
+## En programación estructurada
+
+C no tiene clases ni constructores, pero la misma necesidad existe. Se
+resuelve con dos piezas. Una variable `static`, que existe una sola vez y
+solo es visible dentro de su archivo, y una función que entrega siempre su
+dirección.
+
+```c
+typedef struct { int log_count; } Logger;
+
+static Logger instancia;             /* una sola copia, visible solo en este archivo */
+
+Logger *logger_instancia(void) {     /* unico punto de acceso */
+    return &instancia;
+}
+
+void logger_log(Logger *l, const char *mensaje) {
+    l->log_count++;
+    printf("[%d] LOG: %s\n", l->log_count, mensaje);
+}
+```
+
+La variable `instancia` es la única instancia y `logger_instancia()` es el
+punto de acceso global. Son las mismas dos ideas del patrón.
+
+Lo que C no tiene es el equivalente al constructor privado. Si la
+estructura `Logger` es visible para quien incluye el archivo, nada impide
+declarar otra variable `Logger` o copiar la existente con
+`Logger copia = *a;`, y el compilador no avisa. Para cerrar esa puerta se
+declara `Logger` como tipo opaco. La definición de la estructura se oculta
+en el archivo `.c`, y el resto del programa solo maneja punteros a ella
+(Parnas, 1972). Es lo más parecido al constructor privado de Java, y en
+los dos casos la garantía de la instancia única la impone el diseño, no el
+patrón por sí solo.
+
 ## Cuándo sí y cuándo no
 
 Un patrón no es obligatorio. Usarlo donde no hace falta es agregar
@@ -133,3 +168,6 @@ que observaste la diferencia.
 
 Gamma, E., Helm, R., Johnson, R. y Vlissides, J. (1994). *Design Patterns:
 Elements of Reusable Object-Oriented Software*. Addison-Wesley.
+
+Parnas, D. L. (1972). On the criteria to be used in decomposing systems into
+modules. *Communications of the ACM, 15*(12), 1053-1058.
