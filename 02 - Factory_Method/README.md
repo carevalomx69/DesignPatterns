@@ -5,6 +5,44 @@
 Reconocer el patrón Factory Method, ver qué cambia en el código al usarlo
 frente a un `if/else` que crea los objetos, y decidir cuándo conviene.
 
+El problema que resuelve aparece cuando un programa necesita crear objetos
+de varios tipos parecidos, por ejemplo documentos en PDF o en Word. Si lo
+hace escribiendo `new` con cada clase concreta dentro de un `if/else`, queda
+atado a todas ellas. Mientras los tipos son pocos y no cambian, eso
+funciona. Pero cada tipo nuevo obliga a modificar código que ya funcionaba,
+y si la misma decisión se repite en varias funciones, hay que corregirlas
+todas, con el riesgo de romper algo que ya estaba probado. Factory Method
+reúne esa decisión en un solo lugar, de modo que agregar un tipo sea
+escribir clases nuevas y no editar las existentes (Gamma et al., 1994).
+
+## Conocimientos de POO necesarios para la implementación del patrón
+
+Factory Method es un patrón pequeño, pero junta varias ideas de
+programación orientada a objetos, y se apoya en todas a la vez. Si alguna no
+está clara, conviene repasarla antes de seguir, porque los diagramas y el
+código que siguen las dan por sabidas. La columna "Dónde se ve en los
+diagramas de clases" remite a la sección Diagramas de clases, más abajo.
+
+| Concepto | Dónde se ve en los diagramas de clases | En una frase |
+|---|---|---|
+| Interfaz | `Documento` | Es un contrato. Lista los métodos que debe tener cualquier documento, sin escribir su código. Quien la usa no necesita conocer a quien la implementa |
+| Implementación | Flechas punteadas de `DocumentoPDF` y `DocumentoWord` hacia `Documento` (`implements`) | Cada clase se compromete a cumplir el contrato y decide cómo hacerlo. Si le falta un método, no compila |
+| Clase abstracta | `CreadorDocumento` | No se puede instanciar. Deja métodos sin escribir (`crearDocumento()`) para que las subclases los completen y comparte los que sí tiene (`procesar()`) |
+| Herencia | Flechas continuas de `CreadorPDF` y `CreadorWord` hacia `CreadorDocumento` (`extends`) | La subclase reutiliza el código del padre y completa lo que falta |
+| Sobrescritura (*override*) | `crearDocumento()` en `CreadorPDF` y en `CreadorWord` | Cada subclase da su propia versión del método que el padre dejó abstracto |
+| Encapsulación | El `new DocumentoPDF()` dentro de `CreadorPDF` | La decisión de qué clase concreta crear queda guardada en un solo lugar |
+| Polimorfismo | No se dibuja | Al ejecutar `doc.abrir()`, Java corre la versión de la clase real del objeto (`DocumentoPDF` o `DocumentoWord`), aunque la variable esté declarada como `Documento`. Por eso `procesar()` no necesita ningún `if` |
+
+La herencia y la interfaz se parecen, pero expresan cosas distintas. La
+herencia comparte código ("soy un tipo especial de esta clase y reutilizo lo
+que ella ya hace"). La interfaz comparte una promesa, sin código ("ofrezco
+estas operaciones y cómo las hago es asunto mío").
+
+Si estos conceptos todavía te cuestan, es normal. Una buena forma de
+revisarlos es leer `java/sin-patron`. Ahí `Principal` ya trabaja con la
+interfaz `Documento` y con polimorfismo, y lo único que sigue molestando es el
+`new` con su `if/else` repetido. Eso es justo lo que resuelve el creador.
+
 ## Sin el patrón
 
 Esta es la idea en su forma más simple. El cliente crea cada documento con
@@ -14,10 +52,41 @@ modificarlo.
 
 ![Sin el patrón, el cliente depende directamente de DocumentoPDF, DocumentoWord y de la clase nueva DocumentoXML](img/diagrama-sin-patron.svg)
 
-El código de `java/sin-patron` ya da un paso más, porque usa la interfaz
-`Documento`. Aun así, `Principal` es quien conoce las clases concretas y
-escribe `new` con un `if/else`, una vez en `procesar()` y otra en
-`vistaPrevia()`. Así se ve como diagrama de clases.
+## El patrón en breve
+
+Factory Method define un método para crear objetos y deja que las
+subclases decidan qué clase concreta instanciar (Gamma et al., 1994). Quien
+usa el objeto trabaja con una interfaz y no conoce la clase concreta.
+
+Un ejemplo cotidiano es una aplicación que procesa documentos en PDF o en
+Word. Las piezas son cuatro.
+
+- **Producto.** La interfaz que el programa necesita (`Documento`).
+- **Producto concreto.** Cada formato real (`DocumentoPDF`, `DocumentoWord`).
+- **Creador.** Una clase abstracta con el *factory method* (`crearDocumento()`)
+  y con la lógica que lo usa (`procesar()`, `vistaPrevia()`).
+- **Creador concreto.** Cada subclase decide qué producto crear
+  (`CreadorPDF`, `CreadorWord`).
+
+Así se ve la idea. El cliente ya no escribe `new` con las clases concretas,
+sino que trabaja con un creador. Los creadores están a la izquierda, los
+productos a la derecha, y cada creador concreto es el único que conoce a su
+producto.
+
+![Con Factory Method, el cliente depende solo de CreadorDocumento y de la interfaz Documento, y cada creador concreto crea su producto con new](img/diagrama-con-patron.svg)
+
+## Diagramas de clases
+
+Las imágenes anteriores muestran la idea. Aquí están los mismos dos
+escenarios como diagramas de clases, con la notación UML que se usa en la
+documentación de software.
+
+### Versión sin patrón
+
+El código de `java/sin-patron` ya da un paso más que la imagen simplificada,
+porque usa la interfaz `Documento`. Aun así, `Principal` es quien conoce las
+clases concretas y escribe `new` con un `if/else`, una vez en `procesar()` y
+otra en `vistaPrevia()`.
 
 ```mermaid
 classDiagram
@@ -43,35 +112,11 @@ Las dos flechas de `Principal` hacia las clases concretas son el problema.
 Agregar un formato nuevo obliga a abrir `Principal` y agregar un `else if` en
 cada función que decide qué crear.
 
-## El patrón en breve
+### Versión con patrón
 
-Factory Method define un método para crear objetos y deja que las
-subclases decidan qué clase concreta instanciar (Gamma et al., 1994). Quien
-usa el objeto trabaja con una interfaz y no conoce la clase concreta.
-
-El problema que resuelve es este. Un código que escribe `new` con clases
-concretas queda atado a ellas. Si hay que agregar un tipo nuevo, se modifica
-código que ya funcionaba, y si la decisión de qué crear se repite en varias
-funciones, hay que modificarlas todas.
-
-Un ejemplo cotidiano es una aplicación que procesa documentos en PDF o en
-Word. Las piezas son cuatro.
-
-- **Producto.** La interfaz que el programa necesita (`Documento`).
-- **Producto concreto.** Cada formato real (`DocumentoPDF`, `DocumentoWord`).
-- **Creador.** Una clase abstracta con el *factory method* (`crearDocumento()`)
-  y con la lógica que lo usa (`procesar()`, `vistaPrevia()`).
-- **Creador concreto.** Cada subclase decide qué producto crear
-  (`CreadorPDF`, `CreadorWord`).
-
-Así se ve la idea. El cliente ya no escribe `new` con las clases concretas,
-sino que trabaja con un creador. Los creadores están a la izquierda, los
-productos a la derecha, y cada creador concreto es el único que conoce a su
-producto.
-
-![Con Factory Method, el cliente depende solo de CreadorDocumento y de la interfaz Documento, y cada creador concreto crea su producto con new](img/diagrama-con-patron.svg)
-
-El mismo diagrama, escrito como diagrama de clases.
+Con Factory Method, el `new` de las clases de documento ya no aparece fuera
+de los creadores. `CreadorDocumento` declara el factory method abstracto y
+cada creador concreto lo completa creando su propio producto.
 
 ```mermaid
 classDiagram
@@ -99,32 +144,6 @@ classDiagram
     CreadorWord ..> DocumentoWord : new
 ```
 
-## Qué conceptos de POO aparecen en el diagrama
-
-El diagrama de arriba es pequeño, pero junta varias ideas de programación
-orientada a objetos, y el patrón se apoya en todas a la vez. Si alguna no
-está clara, conviene repasarla antes de seguir con la práctica.
-
-| Concepto | Dónde se ve | En una frase |
-|---|---|---|
-| Interfaz | `Documento` | Es un contrato. Lista los métodos que debe tener cualquier documento, sin escribir su código. Quien la usa no necesita conocer a quien la implementa |
-| Implementación | Flechas punteadas de `DocumentoPDF` y `DocumentoWord` hacia `Documento` (`implements`) | Cada clase se compromete a cumplir el contrato y decide cómo hacerlo. Si le falta un método, no compila |
-| Clase abstracta | `CreadorDocumento` | No se puede instanciar. Deja métodos sin escribir (`crearDocumento()`) para que las subclases los completen y comparte los que sí tiene (`procesar()`) |
-| Herencia | Flechas continuas de `CreadorPDF` y `CreadorWord` hacia `CreadorDocumento` (`extends`) | La subclase reutiliza el código del padre y completa lo que falta |
-| Sobrescritura (*override*) | `crearDocumento()` en `CreadorPDF` y en `CreadorWord` | Cada subclase da su propia versión del método que el padre dejó abstracto |
-| Encapsulación | El `new DocumentoPDF()` dentro de `CreadorPDF` | La decisión de qué clase concreta crear queda guardada en un solo lugar |
-| Polimorfismo | No se dibuja | Al ejecutar `doc.abrir()`, Java corre la versión de la clase real del objeto (`DocumentoPDF` o `DocumentoWord`), aunque la variable esté declarada como `Documento`. Por eso `procesar()` no necesita ningún `if` |
-
-La herencia y la interfaz se parecen, pero expresan cosas distintas. La
-herencia comparte código ("soy un tipo especial de esta clase y reutilizo lo
-que ella ya hace"). La interfaz comparte una promesa, sin código ("ofrezco
-estas operaciones y cómo las hago es asunto mío").
-
-Si estos conceptos todavía te cuestan, es normal. Una buena forma de
-revisarlos es volver a `java/sin-patron`. Ahí `Principal` ya trabaja con la
-interfaz `Documento` y con polimorfismo, y lo único que sigue molestando es el
-`new` con su `if/else` repetido. Eso es justo lo que resuelve el creador.
-
 ## Cuándo sí y cuándo no
 
 Con solo dos formatos y una función que los crea, un `if/else` es más
@@ -142,21 +161,6 @@ función con un `switch` que devuelve el objeto, como la de
 `referencia-csharp/calculoViabilidad.cs`. Es útil y sencilla, pero no es uno
 de los 23 patrones del catálogo, que solo describe Factory Method y Abstract
 Factory como patrones de creación por fábricas (Gamma et al., 1994).
-
-## Archivos
-
-```
-02 - Factory_Method/
-├── README.md
-├── java/
-│   ├── sin-patron/        Documento, DocumentoPDF, DocumentoWord y Principal
-│   └── con-patron/        los mismos tres más CreadorDocumento, CreadorPDF,
-│                          CreadorWord y Principal
-└── referencia-csharp/     versión original en C#, solo de consulta
-```
-
-Los programas no llevan acentos a propósito, para evitar problemas de
-codificación en la consola de Windows.
 
 ## Práctica en Java (20 min)
 
@@ -218,7 +222,25 @@ public class CreadorExcel extends CreadorDocumento {
 }
 ```
 
-## Patrones usados en el taller de arquitecturas (sin haberlos conocido aun)
+## Árbol de archivos
+
+```
+02 - Factory_Method/
+├── README.md
+├── img/                   diagramas de este README en formato SVG
+├── java/
+│   ├── sin-patron/        Documento, DocumentoPDF, DocumentoWord y Principal
+│   └── con-patron/        los mismos tres más CreadorDocumento, CreadorPDF,
+│                          CreadorWord y Principal
+└── referencia-csharp/     versión original en C#, solo de consulta
+```
+
+Los programas no llevan acentos a propósito, para evitar problemas de
+codificación en la consola de Windows.
+
+## Anexos
+
+### Referencia a patrones arquitectónicos
 
 En el [Taller de Arquitecturas de Software](https://github.com/carevalomx69/Taller-de-Arquitecturas-de-Software)
 no hay un Factory Method textual, con subclases creadoras. Lo que sí
@@ -235,7 +257,7 @@ resuelve con funciones de creación, que es lo habitual en JavaScript.
 Ábrelos y revisa el código. Piensa qué tendría que cambiar en `domain/` si
 mañana se usara otra base de datos, y compáralo con la tabla de arriba.
 
-## Errores comunes
+### Errores comunes
 
 | Problema | Causa probable | Solución |
 |---|---|---|
