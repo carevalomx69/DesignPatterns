@@ -5,6 +5,37 @@
 Reconocer el patrón Factory Method, ver qué cambia en el código al usarlo
 frente a un `if/else` que crea los objetos, y decidir cuándo conviene.
 
+## Sin el patrón
+
+Así está organizado el código de `java/sin-patron`. `Principal` ya trabaja
+con la interfaz `Documento`, pero es quien conoce las clases concretas y
+escribe `new` con un `if/else`, una vez en `procesar()` y otra en
+`vistaPrevia()`.
+
+```mermaid
+classDiagram
+    class Documento {
+        <<interface>>
+        +abrir()
+        +guardar()
+    }
+    class DocumentoPDF
+    class DocumentoWord
+    class Principal {
+        +procesar(tipo)
+        +vistaPrevia(tipo)
+    }
+    Documento <|.. DocumentoPDF
+    Documento <|.. DocumentoWord
+    Principal ..> Documento : usa
+    Principal ..> DocumentoPDF : crea con new
+    Principal ..> DocumentoWord : crea con new
+```
+
+Las dos flechas de `Principal` hacia las clases concretas son el problema.
+Agregar un formato nuevo obliga a abrir `Principal` y agregar un `else if` en
+cada función que decide qué crear.
+
 ## El patrón en breve
 
 Factory Method define un método para crear objetos y deja que las
@@ -52,45 +83,31 @@ classDiagram
     CreadorWord ..> DocumentoWord : new
 ```
 
-## En programación estructurada
+## Qué conceptos de POO aparecen en el diagrama
 
-C no tiene clases ni herencia, pero se logra el mismo efecto con punteros a
-función. El producto es una estructura con las funciones que todo documento
-debe tener, y el factory method es una función que devuelve el producto
-adecuado.
+El diagrama de arriba es pequeño, pero junta varias ideas de programación
+orientada a objetos, y el patrón se apoya en todas a la vez. Si alguna no
+está clara, conviene repasarla antes de seguir con la práctica.
 
-```c
-typedef struct { void (*abrir)(void); void (*guardar)(void); } Documento;
+| Concepto | Dónde se ve | En una frase |
+|---|---|---|
+| Interfaz | `Documento` | Es un contrato. Lista los métodos que debe tener cualquier documento, sin escribir su código. Quien la usa no necesita conocer a quien la implementa |
+| Implementación | Flechas punteadas de `DocumentoPDF` y `DocumentoWord` hacia `Documento` (`implements`) | Cada clase se compromete a cumplir el contrato y decide cómo hacerlo. Si le falta un método, no compila |
+| Clase abstracta | `CreadorDocumento` | No se puede instanciar. Deja métodos sin escribir (`crearDocumento()`) para que las subclases los completen y comparte los que sí tiene (`procesar()`) |
+| Herencia | Flechas continuas de `CreadorPDF` y `CreadorWord` hacia `CreadorDocumento` (`extends`) | La subclase reutiliza el código del padre y completa lo que falta |
+| Sobrescritura (*override*) | `crearDocumento()` en `CreadorPDF` y en `CreadorWord` | Cada subclase da su propia versión del método que el padre dejó abstracto |
+| Encapsulación | El `new DocumentoPDF()` dentro de `CreadorPDF` | La decisión de qué clase concreta crear queda guardada en un solo lugar |
+| Polimorfismo | No se dibuja | Al ejecutar `doc.abrir()`, Java corre la versión de la clase real del objeto (`DocumentoPDF` o `DocumentoWord`), aunque la variable esté declarada como `Documento`. Por eso `procesar()` no necesita ningún `if` |
 
-static void abrir_pdf(void)    { puts("PDF: abriendo"); }
-static void guardar_pdf(void)  { puts("PDF: guardando"); }
-static void abrir_word(void)   { puts("Word: abriendo"); }
-static void guardar_word(void) { puts("Word: guardando"); }
+La herencia y la interfaz se parecen, pero expresan cosas distintas. La
+herencia comparte código ("soy un tipo especial de esta clase y reutilizo lo
+que ella ya hace"). La interfaz comparte una promesa, sin código ("ofrezco
+estas operaciones y cómo las hago es asunto mío").
 
-const Documento *crear_pdf(void) {
-    static const Documento d = { abrir_pdf, guardar_pdf };
-    return &d;
-}
-const Documento *crear_word(void) {
-    static const Documento d = { abrir_word, guardar_word };
-    return &d;
-}
-
-void procesar(const Documento *(*crear)(void)) {   /* no sabe que formatos hay */
-    const Documento *doc = crear();
-    doc->abrir();
-    doc->guardar();
-}
-```
-
-Se usa con `procesar(crear_pdf)` o con `procesar(crear_word)`. La función
-`procesar` se escribe una sola vez y no sabe qué formatos existen. Agregar
-Excel es escribir otra función `crear_excel`, sin tocarla.
-
-Lo que C no impone es que el producto esté completo. Si al armar la
-estructura se olvida un puntero, por ejemplo el de `guardar` en Word, el
-programa compila sin error y se cae al ejecutarse. En Java, olvidar un
-método abstracto es un error de compilación.
+Si estos conceptos todavía te cuestan, es normal. Una buena forma de
+revisarlos es volver a `java/sin-patron`. Ahí `Principal` ya trabaja con la
+interfaz `Documento` y con polimorfismo, y lo único que sigue molestando es el
+`new` con su `if/else` repetido. Eso es justo lo que resuelve el creador.
 
 ## Cuándo sí y cuándo no
 
