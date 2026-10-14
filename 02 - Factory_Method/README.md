@@ -7,10 +7,17 @@ frente a un `if/else` que crea los objetos, y decidir cuándo conviene.
 
 ## Sin el patrón
 
-Así está organizado el código de `java/sin-patron`. `Principal` ya trabaja
-con la interfaz `Documento`, pero es quien conoce las clases concretas y
+Esta es la idea en su forma más simple. El cliente crea cada documento con
+`new` y decide cuál con un `if/else`, así que conoce todas las clases
+concretas. Si piden un formato nuevo, como XML, hay que abrir el cliente y
+modificarlo.
+
+![Sin el patrón, el cliente depende directamente de DocumentoPDF, DocumentoWord y de la clase nueva DocumentoXML](img/diagrama-sin-patron.svg)
+
+El código de `java/sin-patron` ya da un paso más, porque usa la interfaz
+`Documento`. Aun así, `Principal` es quien conoce las clases concretas y
 escribe `new` con un `if/else`, una vez en `procesar()` y otra en
-`vistaPrevia()`.
+`vistaPrevia()`. Así se ve como diagrama de clases.
 
 ```mermaid
 classDiagram
@@ -56,6 +63,15 @@ Word. Las piezas son cuatro.
   y con la lógica que lo usa (`procesar()`, `vistaPrevia()`).
 - **Creador concreto.** Cada subclase decide qué producto crear
   (`CreadorPDF`, `CreadorWord`).
+
+Así se ve la idea. El cliente ya no escribe `new` con las clases concretas,
+sino que trabaja con un creador. Los creadores están a la izquierda, los
+productos a la derecha, y cada creador concreto es el único que conoce a su
+producto.
+
+![Con Factory Method, el cliente depende solo de CreadorDocumento y de la interfaz Documento, y cada creador concreto crea su producto con new](img/diagrama-con-patron.svg)
+
+El mismo diagrama, escrito como diagrama de clases.
 
 ```mermaid
 classDiagram
