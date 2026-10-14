@@ -116,7 +116,8 @@ cada función que decide qué crear.
 
 Con Factory Method, el `new` de las clases de documento ya no aparece fuera
 de los creadores. `CreadorDocumento` declara el factory method abstracto y
-cada creador concreto lo completa creando su propio producto.
+cada creador concreto lo completa creando su propio producto. `Principal`
+ya no crea documentos, solo elige qué creador usar.
 
 ```mermaid
 classDiagram
@@ -135,6 +136,7 @@ classDiagram
     }
     class CreadorPDF
     class CreadorWord
+    class Principal
     Documento <|.. DocumentoPDF
     Documento <|.. DocumentoWord
     CreadorDocumento <|-- CreadorPDF
@@ -142,7 +144,14 @@ classDiagram
     CreadorDocumento ..> Documento : crea
     CreadorPDF ..> DocumentoPDF : new
     CreadorWord ..> DocumentoWord : new
+    Principal ..> CreadorDocumento : usa
+    Principal ..> CreadorPDF : elige con new
+    Principal ..> CreadorWord : elige con new
 ```
+
+Compara con la versión sin patrón. `Principal` sigue tomando una decisión,
+pero ahora elige un creador y ya no depende de `DocumentoPDF` ni de
+`DocumentoWord`.
 
 ## Cuándo sí y cuándo no
 
@@ -197,7 +206,7 @@ nombre.
 |---|---|---|
 | Dónde aparece `new DocumentoPDF()` | En dos funciones de `Principal`, una por cada `if/else` | En un solo lugar, `CreadorPDF` |
 | Dónde se escribe la lógica de procesar | Dentro de `Principal`, mezclada con la decisión de qué crear | En `CreadorDocumento`, una sola vez y separada de esa decisión |
-| Quién conoce las clases concretas | `Principal`, que depende de todas | Solo cada creador concreto. `procesar()` trabaja con `Documento` |
+| Quién conoce las clases concretas | `Principal`, que depende de todas | Solo cada creador concreto conoce las clases de documento. `procesar()` trabaja con `Documento` |
 | Agregar el formato Excel | Crear `DocumentoExcel` y modificar `Principal` en dos lugares | Crear `DocumentoExcel` y `CreadorExcel`. `procesar()` y `vistaPrevia()` no cambian |
 | Código existente que se modifica | Sí | Ninguna clase existente. Solo se agrega la línea que elige `new CreadorExcel()` |
 | Clases en total | 4 | 7 |
