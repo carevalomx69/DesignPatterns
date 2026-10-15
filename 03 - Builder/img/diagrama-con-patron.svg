@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="380" viewBox="0 0 680 380" role="img" font-family="Helvetica, Arial, sans-serif">
+<title>Con Builder, el cliente pide cada dato por nombre y build() entrega la computadora</title>
+<desc>El cliente usa el Builder, que es una clase anidada de Computadora con un método por cada dato opcional. El método build() crea la Computadora, que tiene un constructor privado. El cliente también usa la Computadora ya terminada.</desc>
+<defs>
+<marker id="mg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+<rect x="0.5" y="0.5" width="679" height="379" rx="12" fill="#FFFFFF" stroke="#D3D1C7"/>
+<line x1="340" y1="86" x2="340" y2="138" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#mg)"/>
+<line x1="340" y1="196" x2="340" y2="248" stroke="#5F5E5A" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#mg)"/>
+<path d="M440 58 L600 58 L600 278 L442 278" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#mg)"/>
+<rect x="240" y="30" width="200" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+<text x="340" y="53" text-anchor="middle" font-size="14" font-weight="500" fill="#444441">Cliente</text>
+<text x="340" y="72" text-anchor="middle" font-size="12" fill="#5F5E5A">Principal</text>
+<rect x="120" y="140" width="440" height="56" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+<text x="340" y="163" text-anchor="middle" font-size="14" font-weight="500" fill="#3C3489">Computadora.Builder</text>
+<text x="340" y="182" text-anchor="middle" font-size="12" fill="#534AB7">.ram()  .almacenamiento()  .tarjetaGrafica()  .build()</text>
+<rect x="240" y="250" width="200" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"/>
+<text x="340" y="273" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">Computadora</text>
+<text x="340" y="292" text-anchor="middle" font-size="12" fill="#0F6E56">constructor privado</text>
+<line x1="60" y1="346" x2="100" y2="346" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="112" y="350" font-size="12" fill="#444441">Usa</text>
+<line x1="200" y1="346" x2="240" y2="346" stroke="#5F5E5A" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#mg)"/>
+<text x="252" y="350" font-size="12" fill="#444441">Crea con build()</text>
+</svg>

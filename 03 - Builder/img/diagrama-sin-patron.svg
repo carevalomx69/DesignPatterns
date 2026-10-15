@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="360" viewBox="0 0 680 360" role="img" font-family="Helvetica, Arial, sans-serif">
+<title>Sin el patrón, el cliente llama a un constructor con argumentos por posición</title>
+<desc>El cliente crea la computadora con new y los datos en posiciones fijas, rellenando con null los que no quiere dar. La clase tiene un constructor por cada combinación, y un dato opcional nuevo obliga a escribir otro constructor.</desc>
+<defs>
+<marker id="mg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+<rect x="0.5" y="0.5" width="679" height="359" rx="12" fill="#FFFFFF" stroke="#D3D1C7"/>
+<line x1="340" y1="86" x2="340" y2="128" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#mg)"/>
+<rect x="80" y="30" width="520" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="1"/>
+<text x="340" y="53" text-anchor="middle" font-size="14" font-weight="500" fill="#712B13">Cliente</text>
+<text x="340" y="72" text-anchor="middle" font-size="12" fill="#993C1D">new Computadora("AMD Ryzen 7", null, null, "AMD Radeon RX 7900")</text>
+<rect x="120" y="130" width="440" height="148" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+<text x="340" y="155" text-anchor="middle" font-size="14" font-weight="500" fill="#444441">Computadora</text>
+<text x="340" y="174" text-anchor="middle" font-size="12" fill="#5F5E5A">cuatro constructores, orden fijo</text>
+<text x="340" y="203" text-anchor="middle" font-size="12" fill="#444441">Computadora(cpu)</text>
+<text x="340" y="222" text-anchor="middle" font-size="12" fill="#444441">Computadora(cpu, ram)</text>
+<text x="340" y="241" text-anchor="middle" font-size="12" fill="#444441">Computadora(cpu, ram, almacenamiento)</text>
+<text x="340" y="260" text-anchor="middle" font-size="12" fill="#444441">Computadora(cpu, ram, almacenamiento, tarjetaGrafica)</text>
+<rect x="120" y="294" width="440" height="36" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1" stroke-dasharray="5 4"/>
+<text x="340" y="316" text-anchor="middle" font-size="12" fill="#444441">Dato opcional nuevo: otro constructor</text>
+</svg>

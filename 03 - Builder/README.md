@@ -5,23 +5,65 @@
 Reconocer el patrón Builder, ver qué problema resuelve frente a los
 constructores con muchos parámetros, y decidir cuándo conviene usarlo.
 
+El problema aparece cuando un objeto tiene varios datos opcionales. La clase
+termina con un constructor por cada combinación, cada uno con un parámetro
+más que el anterior, lo que se conoce como constructores telescópicos
+(Bloch, 2018). Quien los usa debe recordar el orden exacto de los argumentos
+y rellenar con `null` los datos que no quiere dar. Si dos datos son del
+mismo tipo, como los `String` de una computadora, se pueden intercambiar sin
+que el compilador lo note, y el programa corre con un dato equivocado.
+Builder arma el objeto paso a paso y pide cada dato por su nombre. Así el
+código se lee con claridad, y un descuido de ese tipo se ve en la propia
+línea.
+
+## Conocimientos de POO necesarios para la implementación del patrón
+
+Esta variante de Builder es pequeña y no usa herencia ni interfaces, pero sí
+se apoya en varias ideas de programación orientada a objetos. Si alguna no
+está clara, conviene repasarla antes de seguir, porque los diagramas y el
+código que siguen las dan por sabidas. La columna "Dónde se ve en los
+diagramas de clases" remite a la sección Diagramas de clases, más abajo.
+
+| Concepto | Dónde se ve en los diagramas de clases | En una frase |
+|---|---|---|
+| Constructor | Los `Computadora(...)` de la versión sin patrón y el `Builder(String cpu)` de la versión con patrón | Es el método especial que se ejecuta al escribir `new`. Recibe los datos iniciales y los guarda en los atributos |
+| Sobrecarga de constructores | Los cuatro `Computadora(...)` de la versión sin patrón | Varios constructores con el mismo nombre y distinta lista de parámetros. Java elige uno según los argumentos que se le pasan. Cuando cada uno agrega un parámetro al anterior, se llaman telescópicos |
+| Encapsulación | `-Computadora(Builder b)` en la versión con patrón | Un constructor `private` solo se puede llamar desde dentro de la clase. Así nadie arma una `Computadora` por fuera del `Builder` |
+| Atributos `final` | No se dibuja. Se ve en el código, como `private final String cpu` | Un atributo `final` se asigna una sola vez, en el constructor. Después de armada, la computadora ya no cambia |
+| Clase anidada estática | `Builder` dentro de `Computadora`. El diagrama las dibuja por separado | Es una clase declarada dentro de otra con `static`. Existe sin necesitar un objeto de la clase externa, por eso se escribe `new Computadora.Builder(...)`, y puede usar el constructor privado de `Computadora` |
+| Devolver `this` | `+ram(String) Builder` y los demás métodos del `Builder` | Cada método guarda su dato y devuelve el mismo builder. Eso permite encadenar las llamadas en una sola expresión, como `.ram(...).almacenamiento(...)` |
+| `null` | No se dibuja. Aparece en las llamadas de `java/sin-patron/Principal.java` | Es el valor que significa "no hay dato". Un `String` sin dato vale `null`, y usarlo sin revisar puede fallar |
+
+Un constructor normal y un builder hacen el mismo trabajo, que es armar el
+objeto. La diferencia es que el constructor recibe todo de golpe y por
+posición, y el builder lo recibe por partes y por nombre.
+
+Si estos conceptos todavía te cuestan, es normal. Una buena forma de
+revisarlos es leer `java/sin-patron`, que solo usa constructores y `null`, y
+después compararlo con `java/con-patron`. En ambas versiones todo ocurre
+dentro de `Computadora` y, en la segunda, de su `Builder`.
+
+## Sin el patrón
+
+Esta es la idea en su forma más simple. El cliente arma la computadora con
+un constructor que recibe los datos en posiciones fijas, y rellena con
+`null` los que no quiere dar. Cada dato opcional nuevo obliga a escribir
+otro constructor y a repasar las llamadas que usan `null`.
+
+![Sin el patrón, el cliente llama a un constructor con argumentos por posición y rellena con null, y un dato opcional nuevo agrega otro constructor](img/diagrama-sin-patron.svg)
+
 ## El patrón en breve
 
 Builder separa la construcción de un objeto complejo de su representación,
 de modo que el mismo proceso pueda producir configuraciones distintas (Gamma
 et al., 1994). Arma el objeto paso a paso y lo entrega terminado al final.
 
-El problema más frecuente que lo motiva es el de los **constructores
-telescópicos**. Cuando un objeto tiene varios datos opcionales, la clase
-termina con un constructor por cada combinación, cada uno con un parámetro
-más que el anterior. Quien lo usa debe recordar el orden de los argumentos y
-rellenar con `null` los datos que no quiere dar.
-
 En Java, la forma más usada hoy es la variante fluida que describe Bloch
 (2018), pensada justo para clases con muchos parámetros opcionales. Esa es
 la que se practica aquí. La versión clásica del GoF, con un `Director` que
 repite una receta de armado y varios builders que producen representaciones
-distintas, está en `referencia-csharp/Program.cs`.
+distintas, está en `referencia-csharp/Program.cs`. Esa versión sí usa una
+interfaz y herencia, a diferencia de la variante fluida.
 
 Las piezas de la variante fluida son tres.
 
@@ -31,6 +73,50 @@ Las piezas de la variante fluida son tres.
   nombre por cada dato opcional. Cada método devuelve el mismo builder, y
   eso permite encadenar las llamadas.
 - **`build()`**, que entrega el producto terminado.
+
+Así se ve la idea. El cliente ya no llama a un constructor con todos los
+datos. Se los pide al builder por su nombre, uno por uno, y al final
+`build()` entrega la computadora terminada.
+
+![Con Builder, el cliente pide cada dato por nombre al Builder y build() crea la Computadora](img/diagrama-con-patron.svg)
+
+## Diagramas de clases
+
+Las imágenes anteriores muestran la idea. Aquí están los mismos dos
+escenarios como diagramas de clases, con la notación UML que se usa en la
+documentación de software.
+
+### Versión sin patrón
+
+En `java/sin-patron`, `Computadora` tiene cuatro constructores, uno por cada
+combinación de datos que se quiso soportar. `Principal` crea cada
+computadora con `new` y los datos en posiciones fijas.
+
+```mermaid
+classDiagram
+    class Computadora {
+        -String cpu
+        -String ram
+        -String almacenamiento
+        -String tarjetaGrafica
+        +Computadora(String cpu)
+        +Computadora(String cpu, String ram)
+        +Computadora(String cpu, String ram, String almacenamiento)
+        +Computadora(String cpu, String ram, String almacenamiento, String tarjetaGrafica)
+        +mostrarConfiguracion()
+    }
+    class Principal
+    Principal ..> Computadora : crea con new
+```
+
+Todos los datos son `String`, así que el compilador no distingue un orden de
+otro. Agregar un dato opcional nuevo obliga a escribir un constructor más.
+
+### Versión con patrón
+
+Con Builder, `Computadora` ya no tiene constructores públicos. Su único
+constructor es privado y solo lo llama `build()`. `Principal` pide cada dato
+al `Builder` por su nombre y recibe la computadora terminada.
 
 ```mermaid
 classDiagram
@@ -53,38 +139,18 @@ classDiagram
         +tarjetaGrafica(String) Builder
         +build() Computadora
     }
+    class Principal
     Builder ..> Computadora : build() crea
+    Principal ..> Builder : usa
+    Principal ..> Computadora : usa
 ```
 
 `Builder` es una clase anidada dentro de `Computadora`. El diagrama las
 muestra por separado para que se lean mejor.
 
-## En programación estructurada
-
-En C no hace falta un builder para este problema. Desde C99, los
-inicializadores designados permiten nombrar los campos al crear una
-estructura, y los que no se nombran quedan en cero (`NULL` en el caso de las
-cadenas). Es el mismo beneficio que `.ram(...)` en Java, sin clases
-adicionales.
-
-```c
-typedef struct {
-    const char *cpu;
-    const char *ram;
-    const char *almacenamiento;
-    const char *tarjeta_grafica;
-} Computadora;
-
-Computadora especial = {
-    .cpu = "AMD Ryzen 7",
-    .tarjeta_grafica = "AMD Radeon RX 7900"
-};                                  /* lo que no se nombra queda en NULL */
-```
-
-Lo que C no da es lo que aporta `build()` en Java. Nada obliga a que
-`.cpu` esté presente, y ninguna función valida los datos al crear la
-estructura. Esa revisión hay que escribirla aparte. Se necesita un
-compilador que soporte C99 o una versión posterior.
+Compara con la versión sin patrón. `Principal` ya no escribe
+`new Computadora(...)` con una lista de datos por posición. Los pide uno a
+uno al `Builder`, y la computadora solo se crea al final, en `build()`.
 
 ## Cuándo sí y cuándo no
 
@@ -103,21 +169,6 @@ En otros lenguajes el problema se resuelve de maneras más simples. Por
 ejemplo, en JavaScript se pasa un objeto con los campos por nombre, y no
 hace falta ninguna clase aparte. En ese caso la idea del patrón está
 presente en el lenguaje.
-
-## Archivos
-
-```
-03 - Builder/
-├── README.md
-├── java/
-│   ├── sin-patron/        Computadora.java y Principal.java
-│   └── con-patron/        Computadora.java (con su Builder) y Principal.java
-└── referencia-csharp/     versión original en C#, con el Director y el
-                           anti-patrón, solo de consulta
-```
-
-Los programas no llevan acentos a propósito, para evitar problemas de
-codificación en la consola de Windows.
 
 ## Práctica en Java (20 min)
 
@@ -162,7 +213,25 @@ La última fila es la que decide. El costo es real, porque cada clase con
 builder necesita escribir y mantener su `Builder`. Compensa en clases con
 muchos parámetros opcionales, y casi nunca en clases pequeñas.
 
-## Patrones usados en el taller de arquitecturas (sin haberlos conocido aun)
+## Árbol de archivos
+
+```
+03 - Builder/
+├── README.md
+├── img/                   diagramas de este README en formato SVG
+├── java/
+│   ├── sin-patron/        Computadora.java y Principal.java
+│   └── con-patron/        Computadora.java (con su Builder) y Principal.java
+└── referencia-csharp/     versión original en C#, con el Director y el
+                           anti-patrón, solo de consulta
+```
+
+Los programas no llevan acentos a propósito, para evitar problemas de
+codificación en la consola de Windows.
+
+## Anexos
+
+### Referencia a patrones arquitectónicos
 
 En el [Taller de Arquitecturas de Software](https://github.com/carevalomx69/Taller-de-Arquitecturas-de-Software)
 no hay builders. La razón es instructiva. El código del taller está en
@@ -177,7 +246,7 @@ cada campo, que es justo lo que el builder logra en Java.
 Ábrelos y revisa el código. Piensa qué problema de la versión sin patrón de
 Java no existe en estos archivos.
 
-## Errores comunes
+### Errores comunes
 
 | Problema | Causa probable | Solución |
 |---|---|---|
