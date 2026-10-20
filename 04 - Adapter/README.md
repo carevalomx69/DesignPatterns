@@ -29,7 +29,7 @@ Diagramas de clases, más abajo.
 | Delegación | `procesarPago()` y `obtenerEstado()` en `AdaptadorPagoTercero` | El adaptador casi no hace el trabajo. Recibe la petición, la traduce y se la pasa al servicio, que es quien la ejecuta |
 | Constructor que recibe una dependencia | `AdaptadorPagoTercero(ServicioTerceroPago servicio)` | El adaptador recibe el servicio ya creado y no lo crea él. Por eso `Principal` es quien decide qué servicio y qué adaptador se usan |
 | Polimorfismo | No se dibuja | `cobrarPedido()` recibe un `ProcesadorPago`. Al ejecutarse, Java usa el objeto real que recibió, que aquí es el adaptador, aunque la variable esté declarada con el tipo de la interfaz |
-| Conversión de tipos | `BigDecimal` en `procesarPago` y `double` en `realizarTransaccion` | `BigDecimal` guarda números decimales con exactitud y `double` los guarda de forma aproximada. Pasar de uno a otro puede perder precisión, y por eso conviene que esa conversión ocurra en un solo lugar |
+| Conversión de tipos | `BigDecimal` en `procesarPago` y `double` en `realizarTransaccion` | `BigDecimal` guarda números decimales con exactitud y `double` los guarda de forma aproximada. Pasar de uno a otro puede perder precisión, y por eso conviene que esa conversión ocurra en un solo lugar. Más abajo hay una subsección sobre `BigDecimal` y sus métodos de conversión |
 
 Un adaptador y una clase que hereda pueden parecerse, pero hacen cosas
 distintas. La herencia reutiliza el código de la clase padre. El adaptador de
@@ -40,6 +40,54 @@ Si estos conceptos todavía te cuestan, es normal. Una buena forma de
 revisarlos es leer `java/sin-patron`, donde `Principal` llama directamente al
 servicio del proveedor, y compararlo con `java/con-patron`, donde aparece la
 interfaz y el adaptador en medio.
+
+### `BigDecimal`, el tipo del monto
+
+En el ejemplo, el monto del cobro es un `BigDecimal`, y el servicio del
+proveedor lo recibe como `double`. Conviene saber qué es cada uno, porque esa
+diferencia es justo lo que el adaptador traduce.
+
+`BigDecimal` es una clase de la biblioteca estándar de Java, del paquete
+`java.math`, y por eso el código la importa con
+`import java.math.BigDecimal;`. La documentación la describe como un número
+decimal con signo, inmutable y de precisión arbitraria (Oracle, s. f.). Guarda
+los dígitos decimales tal cual, mientras que `double` los guarda en binario y
+solo de forma aproximada. La diferencia se nota en un caso simple. En Java,
+`0.1 + 0.2` con `double` da `0.30000000000000004`, y con `BigDecimal` da
+exactamente `0.3`. Por eso se recomienda evitar `double` cuando se necesitan
+resultados exactos, como en los cálculos con dinero (Bloch, 2018). No es un
+estándar formal, pero sí la práctica habitual.
+
+Dos detalles de uso importan para el ejemplo.
+
+- **Se crea con texto.** `new BigDecimal("125.50")` guarda exactamente 125.50.
+  En cambio, `new BigDecimal(0.1)`, con un `double`, arrastra la aproximación
+  del `double` y guarda `0.1000000000000000055511151231257827021181583404541015625`.
+  La documentación recomienda el constructor con texto por esa razón (Oracle,
+  s. f.).
+- **No se modifica.** Un `BigDecimal` es inmutable. Las operaciones, como
+  `add` o `movePointRight`, devuelven un objeto nuevo y dejan el original
+  igual.
+
+Para pasar un `BigDecimal` a otro tipo, la clase ofrece varios métodos de
+conversión. Esta tabla muestra los más usados, con el valor `125.50`.
+
+| Método | Qué devuelve | Con `125.50` |
+|---|---|---|
+| `doubleValue()` | Un `double`, que es una aproximación | `125.5` |
+| `intValue()` | Un `int`, y descarta la parte decimal sin avisar | `125` |
+| `longValue()` | Un `long`, igual que el anterior | `125` |
+| `intValueExact()` | Un `int`, pero lanza `ArithmeticException` si perdería información | Lanza la excepción, porque `.50` se perdería. Con `12550.00` devuelve `12550` |
+| `toPlainString()` | Texto, sin notación científica | `"125.50"` |
+| `movePointRight(2)` | Otro `BigDecimal` con el punto decimal corrido dos lugares. Sirve para pasar a centavos | `12550` |
+
+En el adaptador de la práctica se usa `doubleValue()`, porque el servicio del
+proveedor pide un `double` y no hay otra forma de dárselo. Esa conversión
+puede perder precisión, y es una razón más para que ocurra en un solo
+lugar. Más abajo, el segundo proveedor usa otra combinación,
+`movePointRight(2).intValueExact()`, para entregar centavos enteros. Si el
+monto trajera decimales de más, por ejemplo `125.505`, esa combinación lanza
+una excepción en lugar de perder el dato en silencio.
 
 ## Sin el patrón
 
@@ -229,6 +277,10 @@ public class AdaptadorPagoAlterno implements ProcesadorPago {
 }
 ```
 
+Aquí `movePointRight(2)` corre el punto decimal dos lugares, y `125.50` pasa a
+`12550.00`. Después `intValueExact()` lo convierte a entero y falla si
+quedaran decimales, en lugar de descartarlos.
+
 ## Árbol de archivos
 
 ```
@@ -287,8 +339,13 @@ que observaste la diferencia.
 
 ## Referencias
 
+Bloch, J. (2018). *Effective Java* (3.ª ed.). Addison-Wesley.
+
 Cockburn, A. (2005). *The Hexagonal (Ports & Adapters) Architecture*.
 https://alistair.cockburn.us/hexagonal-architecture/
 
 Gamma, E., Helm, R., Johnson, R. y Vlissides, J. (1994). *Design Patterns:
 Elements of Reusable Object-Oriented Software*. Addison-Wesley.
+
+Oracle. (s. f.). *BigDecimal* (Java SE 21 y JDK 21). Documentación de la API.
+https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html
