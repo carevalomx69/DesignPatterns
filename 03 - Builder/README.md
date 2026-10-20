@@ -148,6 +148,13 @@ classDiagram
 `Builder` es una clase anidada dentro de `Computadora`. El diagrama las
 muestra por separado para que se lean mejor.
 
+Que una clase esté anidada no la convierte en composición ni en agregación.
+Esas relaciones se dibujan cuando un objeto guarda a otro en un atributo, y
+aquí ni el `Builder` guarda una `Computadora` ni la `Computadora` conserva al
+`Builder`. El método `build()` crea la computadora y su constructor copia los
+datos. Por eso la relación del diagrama es una dependencia (`..>`) y no lleva
+rombo.
+
 Compara con la versión sin patrón. `Principal` ya no escribe
 `new Computadora(...)` con una lista de datos por posición. Los pide uno a
 uno al `Builder`, y la computadora solo se crea al final, en `build()`.
