@@ -84,10 +84,12 @@ conversión. Esta tabla muestra los más usados, con el valor `125.50`.
 En el adaptador de la práctica se usa `doubleValue()`, porque el servicio del
 proveedor pide un `double` y no hay otra forma de dárselo. Esa conversión
 puede perder precisión, y es una razón más para que ocurra en un solo
-lugar. Más abajo, el segundo proveedor usa otra combinación,
-`movePointRight(2).intValueExact()`, para entregar centavos enteros. Si el
-monto trajera decimales de más, por ejemplo `125.505`, esa combinación lanza
-una excepción en lugar de perder el dato en silencio.
+lugar. Más abajo, en la sección "Qué gana y qué cuesta", se muestra un
+fragmento ilustrativo, que no forma parte de los archivos de la práctica, de
+un hipotético segundo proveedor que recibe centavos enteros. Ahí se usa otra
+combinación, `movePointRight(2).intValueExact()`. Si el monto trajera
+decimales de más, por ejemplo `125.505`, esa combinación lanza una excepción
+en lugar de perder el dato en silencio.
 
 ## Sin el patrón
 
