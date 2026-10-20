@@ -25,11 +25,22 @@ Diagramas de clases, más abajo.
 |---|---|---|
 | Interfaz | `ProcesadorPago` | Es un contrato. Lista los métodos que debe tener cualquier procesador de pagos, sin escribir su código. Quien la usa no necesita conocer a quien la implementa |
 | Implementación | Flecha punteada de `AdaptadorPagoTercero` hacia `ProcesadorPago` (`implements`) | La clase se compromete a cumplir el contrato y decide cómo hacerlo. Si le falta un método, no compila |
-| Composición | `-ServicioTerceroPago servicio` dentro de `AdaptadorPagoTercero`, y la flecha hacia `ServicioTerceroPago` | El adaptador no hereda del servicio. Guarda una referencia a él en un atributo, y esa referencia es lo que le permite usarlo |
+| Composición (en sentido general) | `-ServicioTerceroPago servicio` dentro de `AdaptadorPagoTercero`, y la línea con rombo hueco hacia `ServicioTerceroPago` | El adaptador no hereda del servicio. Guarda una referencia a él en un atributo, y esa referencia es lo que le permite usarlo. En UML estricto este caso se dibuja como agregación, y la razón se explica debajo de la tabla |
 | Delegación | `procesarPago()` y `obtenerEstado()` en `AdaptadorPagoTercero` | El adaptador casi no hace el trabajo. Recibe la petición, la traduce y se la pasa al servicio, que es quien la ejecuta |
 | Constructor que recibe una dependencia | `AdaptadorPagoTercero(ServicioTerceroPago servicio)` | El adaptador recibe el servicio ya creado y no lo crea él. Por eso `Principal` es quien decide qué servicio y qué adaptador se usan |
 | Polimorfismo | No se dibuja | `cobrarPedido()` recibe un `ProcesadorPago`. Al ejecutarse, Java usa el objeto real que recibió, que aquí es el adaptador, aunque la variable esté declarada con el tipo de la interfaz |
 | Conversión de tipos | `BigDecimal` en `procesarPago` y `double` en `realizarTransaccion` | `BigDecimal` guarda números decimales con exactitud y `double` los guarda de forma aproximada. Pasar de uno a otro puede perder precisión, y por eso conviene que esa conversión ocurra en un solo lugar. Más abajo hay una subsección sobre `BigDecimal` y sus métodos de conversión |
+
+Sobre el término "composición". En este README se usa en el sentido general
+de la programación orientada a objetos, que es guardar una referencia a otro
+objeto en un atributo y delegarle trabajo (Gamma et al., 1994). UML es más
+estricto. La composición, que se dibuja con rombo relleno, significa que el
+todo es dueño de la parte, y que si el todo se elimina sus partes también
+(UML Diagrams, s. f.-a). Aquí no ocurre eso, porque `Principal` crea el
+`ServicioTerceroPago` y se lo entrega al adaptador por el constructor, así
+que el servicio existe aunque el adaptador no. Ese caso es una agregación,
+que se dibuja con rombo hueco (UML Diagrams, s. f.-b). El rombo siempre va
+del lado del todo, es decir, del adaptador.
 
 Un adaptador y una clase que hereda pueden parecerse, pero hacen cosas
 distintas. La herencia reutiliza el código de la clase padre. El adaptador de
@@ -183,7 +194,7 @@ classDiagram
         +cobrarSuscripcion(ProcesadorPago procesador, BigDecimal monto)$
     }
     ProcesadorPago <|.. AdaptadorPagoTercero
-    AdaptadorPagoTercero --> ServicioTerceroPago : traduce y llama
+    AdaptadorPagoTercero o-- ServicioTerceroPago : guarda y llama
     Principal ..> ProcesadorPago : usa
     Principal ..> AdaptadorPagoTercero : crea con new
     Principal ..> ServicioTerceroPago : crea con new
@@ -351,3 +362,9 @@ Elements of Reusable Object-Oriented Software*. Addison-Wesley.
 
 Oracle. (s. f.). *BigDecimal* (Java SE 21 y JDK 21). Documentación de la API.
 https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html
+
+UML Diagrams. (s. f.-a). *UML composition*.
+https://www.uml-diagrams.org/composition.html
+
+UML Diagrams. (s. f.-b). *UML aggregation*.
+https://www.uml-diagrams.org/aggregation.html
