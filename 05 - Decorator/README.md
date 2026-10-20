@@ -27,10 +27,21 @@ abajo.
 | Implementación | Flechas punteadas hacia `Bebida` (`implements`) | `CafeSimple` y `DecoradorBebida` se comprometen a cumplir el contrato. Si les falta un método, no compilan |
 | Clase abstracta | `DecoradorBebida` | Es una clase que no se puede crear con `new`. Sirve de base para otras y resuelve lo que todas comparten, que aquí es guardar la bebida envuelta y pasarle las preguntas |
 | Herencia | `Leche`, `Azucar` y `Crema` hacia `DecoradorBebida` (`extends`) | Cada extra recibe de `DecoradorBebida` lo que ya está resuelto y solo escribe lo que cambia, que es su descripción y su precio |
-| Composición | `-Bebida bebida` dentro de `DecoradorBebida` | El decorador guarda una referencia a otra bebida en un atributo. Esa referencia es lo que le permite envolverla |
+| Composición (en sentido general) | `-Bebida bebida` dentro de `DecoradorBebida`, y la línea con rombo hueco llamada `envuelve` | El decorador guarda una referencia a otra bebida en un atributo. Esa referencia es lo que le permite envolverla. En UML estricto este caso se dibuja como agregación, y la razón se explica debajo de la tabla |
 | Delegación | `bebida.obtenerCosto()` dentro de cada decorador | El decorador no calcula el costo completo. Le pregunta a la bebida que envuelve y le suma lo suyo |
 | Constructor que recibe una dependencia | `Leche(Bebida bebida)` | El decorador recibe la bebida ya creada y no la crea él. Por eso `Principal` decide qué se envuelve y en qué orden |
 | Polimorfismo | No se dibuja | `mostrar()` recibe una `Bebida`. Al ejecutarse, Java usa el objeto real que recibió, ya sea un `CafeSimple` o tres decoradores apilados, aunque la variable esté declarada con el tipo de la interfaz |
+
+Sobre el término "composición". En este README se usa en el sentido general
+de la programación orientada a objetos, que es guardar una referencia a otro
+objeto en un atributo y delegarle trabajo (Gamma et al., 1994). UML es más
+estricto. La composición, que se dibuja con rombo relleno, significa que el
+todo es dueño de la parte, y que si el todo se elimina sus partes también
+(UML Diagrams, s. f.-a). Aquí no ocurre eso, porque `Principal` crea la
+bebida y se la entrega al decorador por el constructor, así que la bebida
+envuelta existe aunque el decorador no. Ese caso es una agregación, que se
+dibuja con rombo hueco (UML Diagrams, s. f.-b). El rombo va del lado del
+todo, es decir, del decorador.
 
 Hay dos cosas fáciles de confundir. Primero, un decorador es una `Bebida` y
 además tiene una `Bebida`. Lo primero (la herencia o implementación) permite
@@ -298,3 +309,9 @@ Elements of Reusable Object-Oriented Software*. Addison-Wesley.
 Oracle. (s. f.). *BufferedReader* (Java SE 21 y JDK 21). Documentación de la
 API.
 https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/BufferedReader.html
+
+UML Diagrams. (s. f.-a). *UML composition*.
+https://www.uml-diagrams.org/composition.html
+
+UML Diagrams. (s. f.-b). *UML aggregation*.
+https://www.uml-diagrams.org/aggregation.html
