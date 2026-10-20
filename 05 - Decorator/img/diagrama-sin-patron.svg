@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="330" viewBox="0 0 680 330" role="img" font-family="Helvetica, Arial, sans-serif">
+<title>Sin Decorator, cada combinación de extras necesita su propia clase</title>
+<desc>Una clase base Bebida y cuatro subclases: CafeSimple, CafeConLeche, CafeConAzucar y CafeConLecheYAzucar. Cada combinación nueva obliga a escribir otra subclase, y los precios se repiten en cada una.</desc>
+<defs>
+<marker id="mg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+<rect x="0.5" y="0.5" width="679" height="329" rx="12" fill="#FFFFFF" stroke="#D3D1C7"/>
+<rect x="240" y="26" width="200" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+<text x="340" y="49" text-anchor="middle" font-size="14" font-weight="500" fill="#444441">Bebida</text>
+<text x="340" y="68" text-anchor="middle" font-size="12" fill="#5F5E5A">descripcion  costo</text>
+<line x1="340" y1="120" x2="340" y2="98" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#mg)"/>
+<line x1="95" y1="150" x2="95" y2="120" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="585" y1="150" x2="585" y2="120" stroke="#5F5E5A" stroke-width="1.5"/>
+<line x1="95" y1="120" x2="585" y2="120" stroke="#5F5E5A" stroke-width="1.5"/>
+<rect x="20" y="150" width="150" height="72" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="1"/>
+<text x="95" y="178" text-anchor="middle" font-size="13" font-weight="500" fill="#712B13">CafeSimple</text>
+<text x="95" y="198" text-anchor="middle" font-size="12" fill="#993C1D">precio: 30</text>
+<rect x="188" y="150" width="150" height="72" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="1"/>
+<text x="263" y="178" text-anchor="middle" font-size="13" font-weight="500" fill="#712B13">CafeConLeche</text>
+<text x="263" y="198" text-anchor="middle" font-size="12" fill="#993C1D">precio: 30 + 8</text>
+<rect x="342" y="150" width="150" height="72" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="1"/>
+<text x="417" y="178" text-anchor="middle" font-size="13" font-weight="500" fill="#712B13">CafeConAzucar</text>
+<text x="417" y="198" text-anchor="middle" font-size="12" fill="#993C1D">precio: 30 + 2</text>
+<rect x="510" y="150" width="150" height="72" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="1"/>
+<text x="585" y="172" text-anchor="middle" font-size="12" font-weight="500" fill="#712B13">CafeConLecheYAzucar</text>
+<text x="585" y="198" text-anchor="middle" font-size="12" fill="#993C1D">precio: 30 + 8 + 2</text>
+<text x="340" y="262" text-anchor="middle" font-size="13" font-weight="500" fill="#444441">2 extras: 4 clases. 3 extras: 8. 4 extras: 16.</text>
+<text x="340" y="284" text-anchor="middle" font-size="12" fill="#5F5E5A">Cada extra nuevo duplica las clases y repite los precios en todas.</text>
+<line x1="60" y1="310" x2="100" y2="310" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="112" y="314" font-size="12" fill="#444441">Hereda de</text>
+</svg>
