@@ -133,7 +133,7 @@ diferencia entre ellas.
 | 4 | Adapter | Estructural | Práctica en Java y pistas del Taller | [04 - Adapter](04%20-%20Adapter/) |
 | 5 | Decorator | Estructural | Práctica en Java y pistas del Taller | [05 - Decorator](05%20-%20Decorator/) |
 | 6 | Strategy | Comportamental | Práctica en Java y pistas del Taller | [06 - Strategy](06%20-%20Strategy/) |
-| 7 | Observer | Comportamental | Explicación y ejemplos en C#. Práctica por rediseñar | [07 - Observer](07%20-%20Observer/) |
+| 7 | Observer | Comportamental | Práctica en Java y pistas del Taller | [07 - Observer](07%20-%20Observer/) |
 
 ## Estructura de cada carpeta
 
