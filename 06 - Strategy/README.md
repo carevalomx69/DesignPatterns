@@ -141,7 +141,7 @@ Si hay dos o tres variantes y cada una es una fórmula corta, un `switch` o un
 `if` limpio es más simple y más fácil de leer. Una familia de clases ahí es la
 sobreingeniería de la que habla el README general, y conviene empezar por lo
 sencillo y abstraer cuando el cambio ya duele, no antes (Beck y Andres, 2004).
-Strategy con clases empieza a valer la pena cuando se cumple alguna de estas
+La sección siguiente ordena los pasos intermedios. Strategy con clases empieza a valer la pena cuando se cumple alguna de estas
 situaciones.
 
 - Cada algoritmo es largo o complejo, por ejemplo con validaciones, consultas
@@ -161,6 +161,53 @@ Strategy y Decorator se parecen en que los dos reciben otro objeto por
 composición. Se distinguen por lo que hacen con él. Un decorador envuelve a un
 objeto de su mismo tipo y le suma comportamiento. Una estrategia reemplaza el
 algoritmo con el que el contexto hace su trabajo.
+
+## De lo simple a lo flexible
+
+Entre un `switch` con el código adentro y una familia de clases hay peldaños
+intermedios. Conviene subir solo hasta donde el problema lo pida, y subir un
+peldaño cuando el anterior empieza a doler, no antes (Beck y Andres, 2004;
+Kerievsky, 2004). La escalera es esta.
+
+1. **Un `switch` con el código dentro de cada `case`.** Sirve mientras cada
+   fórmula sea corta. Es la versión de `java/sin-patron`.
+2. **Un `switch` que llama a una función por cada `case`.** Cuando los cálculos
+   se alargan, se extrae cada uno a su propio método y el `case` solo lo llama.
+   Esto resuelve los cuerpos largos sin ningún patrón, y es la primera
+   respuesta razonable. Aquí hay un fragmento ilustrativo, que no forma parte
+   de los archivos de la práctica, para el mismo `Pedido`.
+
+   ```java
+   public int calcularEnvio(String tipoEnvio) {
+       switch (tipoEnvio) {
+           case "estandar": return calcularEstandar();
+           case "expres":   return calcularExpres();
+           default:
+               throw new IllegalArgumentException("Tipo de envio desconocido: " + tipoEnvio);
+       }
+   }
+
+   private int calcularEstandar() { return pesoKg * 15; }
+   private int calcularExpres()   { return pesoKg * 30 + 50; }
+   ```
+
+3. **Pasar la función por parámetro.** Quien usa la clase entrega la función
+   que quiere, y la clase solo la ejecuta. En C es un apuntador a función, como
+   la función de comparación que recibe `qsort`. En Java es una lambda, como en
+   `java/alternativa-funcional`.
+4. **Una clase por variante.** Es el patrón Strategy completo, como en
+   `java/con-patron`. Se justifica cuando cada variante necesita estado propio,
+   varios métodos o pruebas por separado.
+
+La diferencia entre el segundo y el tercer peldaño es quién conoce la lista de
+variantes. En el segundo, `Pedido` sigue conociéndola. Los cuerpos ya son
+cortos, pero agregar el envío internacional obliga a abrir `Pedido` y agregar
+otro `case`, y si el mismo `switch` se repite en otras clases, hay que
+corregirlas todas. Del tercer peldaño en adelante, la decisión pasa a quien usa
+la clase, y `Pedido` ya no necesita cambiar. Por eso Strategy no es una
+respuesta a las fórmulas largas, que ya resuelve el segundo peldaño. Es una
+respuesta a quién decide, y a cuántos lugares hay que tocar cuando las
+variantes cambian.
 
 ## La alternativa sin clases
 
@@ -319,6 +366,8 @@ Beck, K. y Andres, C. (2004). *Extreme Programming Explained: Embrace Change*
 
 Gamma, E., Helm, R., Johnson, R. y Vlissides, J. (1994). *Design Patterns:
 Elements of Reusable Object-Oriented Software*. Addison-Wesley.
+
+Kerievsky, J. (2004). *Refactoring to Patterns*. Addison-Wesley.
 
 Norvig, P. (1996). *Design Patterns in Dynamic Languages* [Presentación].
 https://norvig.com/design-patterns/
