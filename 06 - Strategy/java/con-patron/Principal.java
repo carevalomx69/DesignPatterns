@@ -1,29 +1,25 @@
 public class Principal {
+
+    static void mostrar(Pedido pedido) {
+        System.out.println(pedido.nombreEstrategia() + ": $" + pedido.calcularEnvio());
+    }
+
     public static void main(String[] args) {
-        System.out.println("--- Catalogo (con patron) ---");
+        System.out.println("--- Costo de envio (con patron) ---\n");
 
-        Producto[] lista = {
-            new Producto("Monitor", 250),
-            new Producto("Teclado", 45),
-            new Producto("Mouse", 15),
-            new Producto("Audifonos", 60)
-        };
+        // Este es el lugar que elige la estrategia. Pedido solo recibe una
+        // EstrategiaEnvio y no sabe cual es.
+        Pedido pedido = new Pedido(4, new EnvioEstandar());   // un pedido de 4 kg
+        mostrar(pedido);
 
-        // Este es el lugar que elige la estrategia. Catalogo solo recibe una
-        // EstrategiaOrden y no sabe cual es.
-        Catalogo catalogo = new Catalogo(lista, new OrdenarPorNombre());
-        catalogo.ordenar();
-        catalogo.mostrar();
+        // Se cambia la estrategia en plena ejecucion, como si el cliente
+        // cambiara de opinion en la pantalla. Pedido no se modifica.
+        pedido.setEstrategia(new EnvioExpres());
+        mostrar(pedido);
 
-        // Se cambia la estrategia en plena ejecucion. Catalogo no se modifica.
-        catalogo.setEstrategia(new OrdenarPorPrecio());
-        catalogo.ordenar();
-        catalogo.mostrar();
-
-        // Un criterio nuevo es una clase nueva, y aqui solo se usa.
-        catalogo.setEstrategia(new OrdenarPorPrecioDescendente());
-        catalogo.ordenar();
-        catalogo.mostrar();
+        // Un tipo de envio nuevo es una clase nueva, y aqui solo se usa.
+        pedido.setEstrategia(new EnvioInternacional());
+        mostrar(pedido);
 
         System.out.println("\n--- Fin ---");
     }

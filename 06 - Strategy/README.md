@@ -3,7 +3,8 @@
 ## Objetivo
 
 Reconocer el patrón Strategy, ver qué problema resuelve cuando un mismo
-trabajo se puede hacer de varias formas, y decidir cuándo conviene usarlo.
+trabajo se puede hacer de varias formas, y decidir cuándo conviene usarlo y
+cuándo basta algo más simple.
 
 El problema aparece cuando una clase decide con un `switch` o una cadena de
 `if` cuál de varios algoritmos ejecutar. Cada variante nueva obliga a abrir
@@ -22,12 +23,13 @@ abajo.
 
 | Concepto | Dónde se ve en los diagramas de clases | En una frase |
 |---|---|---|
-| Interfaz | `EstrategiaOrden` | Es un contrato. Dice qué pregunta debe saber responder cualquier criterio de orden (`vaAntes`), sin escribir cómo. Quien la usa no necesita saber cuál criterio recibió |
-| Implementación | Flechas punteadas de `OrdenarPorNombre`, `OrdenarPorPrecio` y `OrdenarPorPrecioDescendente` hacia `EstrategiaOrden` (`implements`) | Cada clase se compromete a cumplir el contrato y decide cómo. Si le falta el método, no compila |
-| Composición (en sentido general) | `-EstrategiaOrden estrategia` dentro de `Catalogo`, y la línea con rombo hueco llamada `delega` | El catálogo guarda una referencia a una estrategia en un atributo. En UML estricto este caso se dibuja como agregación, y la razón se explica debajo de la tabla |
-| Delegación | `estrategia.vaAntes(...)` dentro de `Catalogo.ordenar()` | El catálogo no compara los productos. Le pregunta a la estrategia y usa su respuesta |
-| Constructor que recibe una dependencia, y método `set` | `Catalogo(Producto[], EstrategiaOrden)` y `setEstrategia(...)` | El catálogo recibe la estrategia ya creada y no la crea él. Con el método `set` se puede cambiar por otra mientras el programa corre |
-| Polimorfismo | No se dibuja | `ordenar()` llama a `estrategia.vaAntes(...)`. Al ejecutarse, Java usa el objeto real que está guardado, que puede ser cualquiera de las tres clases, aunque el atributo esté declarado con el tipo de la interfaz |
+| Interfaz | `EstrategiaEnvio` | Es un contrato. Dice qué pregunta debe saber responder cualquier tipo de envío (`calcular`), sin escribir cómo. Quien la usa no necesita saber cuál tipo recibió |
+| Implementación | Flechas punteadas de `EnvioEstandar`, `EnvioExpres` y `EnvioInternacional` hacia `EstrategiaEnvio` (`implements`) | Cada clase se compromete a cumplir el contrato y decide cómo. Si le falta el método, no compila |
+| Composición (en sentido general) | `-EstrategiaEnvio estrategia` dentro de `Pedido`, y la línea con rombo hueco llamada `delega` | El pedido guarda una referencia a una estrategia en un atributo. En UML estricto este caso se dibuja como agregación, y la razón se explica debajo de la tabla |
+| Delegación | `estrategia.calcular(pesoKg)` dentro de `Pedido.calcularEnvio()` | El pedido no calcula el envío. Le pregunta a la estrategia y devuelve su respuesta |
+| Constructor que recibe una dependencia, y método `set` | `Pedido(int, EstrategiaEnvio)` y `setEstrategia(...)` | El pedido recibe la estrategia ya creada y no la crea él. Con el método `set` se puede cambiar por otra mientras el programa corre |
+| Polimorfismo | No se dibuja | `calcularEnvio()` llama a `estrategia.calcular(...)`. Al ejecutarse, Java usa el objeto real que está guardado, que puede ser cualquiera de las tres clases, aunque el atributo esté declarado con el tipo de la interfaz |
+| Interfaz funcional y lambda | No se dibuja. Solo aparece en `java/alternativa-funcional` | Una interfaz con un solo método abstracto se puede implementar escribiendo solo una función, `peso -> peso * 15`, sin escribir una clase (Oracle, s. f.) |
 
 Sobre el término "composición". En este README se usa en el sentido general
 de la programación orientada a objetos, que es guardar una referencia a otro
@@ -35,56 +37,49 @@ objeto en un atributo y delegarle trabajo (Gamma et al., 1994). UML es más
 estricto. La composición, que se dibuja con rombo relleno, significa que el
 todo es dueño de la parte, y que si el todo se elimina sus partes también
 (UML Diagrams, s. f.-a). Aquí no ocurre eso, porque `Principal` crea la
-estrategia y se la entrega al catálogo, así que la estrategia existe aunque
-el catálogo no. Ese caso es una agregación, que se dibuja con rombo hueco (UML
-Diagrams, s. f.-b). El rombo va del lado del todo, es decir, del catálogo.
-
-El ordenamiento que hace `Catalogo.ordenar()` es una versión sencilla del
-ordenamiento por selección, escrita a mano para que el ejemplo no dependa de
-nada más. No es lo que se estudia en la práctica. Lo importante es que ese
-ciclo es igual en las dos versiones, y que lo único que cambia es quién
-responde la pregunta "este producto, va antes que este otro?".
+estrategia y se la entrega al pedido, así que la estrategia existe aunque el
+pedido no. Ese caso es una agregación, que se dibuja con rombo hueco (UML
+Diagrams, s. f.-b). El rombo va del lado del todo, es decir, del pedido.
 
 Si estos conceptos todavía te cuestan, es normal. Una buena forma de
 revisarlos es leer `java/sin-patron`, donde el `switch` está dentro de
-`Catalogo`, y compararlo con `java/con-patron`, donde aparece la interfaz y
-una clase por criterio.
+`Pedido`, y compararlo con `java/con-patron`, donde aparece la interfaz y una
+clase por tipo de envío.
 
 ## Sin el patrón
 
-Esta es la idea en su forma más simple. La clase `Catalogo` ordena los
-productos y decide el criterio con un `switch` interno, que recibe el nombre
-del criterio como texto. Los dos algoritmos viven dentro de esa clase,
-mezclados con el ciclo de ordenamiento, y agregar un criterio obliga a abrirla
-y modificarla.
+Esta es la idea en su forma más simple. Un pedido calcula su costo de envío, y
+el tipo de envío llega como texto a un `switch` dentro de la propia clase
+`Pedido`. Las fórmulas viven ahí, mezcladas con todo lo demás. Agregar un tipo
+de envío obliga a abrir esa clase y modificarla.
 
-![Sin el patrón, Catalogo contiene todos los algoritmos en un switch](img/diagrama-sin-patron.svg)
+![Sin el patrón, Pedido contiene todas las fórmulas de envío en un switch](img/diagrama-sin-patron.svg)
 
 ## El patrón en breve
 
 Strategy define una familia de algoritmos, encapsula cada uno y los hace
 intercambiables, de modo que el algoritmo pueda variar sin que cambie quien lo
-usa (Gamma et al., 1994). Es como elegir la ruta en una aplicación de mapas.
-El origen y el destino son los mismos, y puedes escoger la ruta más rápida, la
-más corta o la que evita casetas. La aplicación cambia de ruta sin cambiar de
-viaje.
+usa (Gamma et al., 1994). Es como una navaja suiza. El mango es siempre el
+mismo, y las herramientas son intercambiables, como la cuchilla, el desarmador
+y las tijeras. El mango no sabe cómo está hecha cada herramienta, solo la usa,
+y cambiar de herramienta no cambia el mango.
 
-En el ejemplo de la práctica, un catálogo ordena productos. Las piezas son
-tres.
+En el ejemplo de la práctica, un pedido calcula su costo de envío. Las piezas
+son tres.
 
-- **Interfaz de la estrategia** (`EstrategiaOrden`). El contrato que cumplen
-  todos los criterios de orden.
-- **Estrategias concretas** (`OrdenarPorNombre`, `OrdenarPorPrecio` y
-  `OrdenarPorPrecioDescendente`). Cada una es un algoritmo, y todas cumplen la
+- **Interfaz de la estrategia** (`EstrategiaEnvio`). El contrato que cumplen
+  todos los tipos de envío.
+- **Estrategias concretas** (`EnvioEstandar`, `EnvioExpres` y
+  `EnvioInternacional`). Cada una es una fórmula distinta, y todas cumplen la
   misma interfaz.
-- **Contexto** (`Catalogo`). La clase que usa una estrategia. Guarda una y le
-  delega la parte que cambia.
+- **Contexto** (`Pedido`). La clase que usa una estrategia. Es el mango de la
+  navaja. Guarda una estrategia y le delega el cálculo.
 
-Así se ve la idea. El contexto ya no contiene los algoritmos. Guarda una
+Así se ve la idea. El contexto ya no contiene las fórmulas. Guarda una
 estrategia y le pregunta lo que necesita saber. Quien arma el programa, que
 aquí es `Principal`, decide cuál estrategia entregarle.
 
-![Con Strategy, Catalogo delega la comparación a una estrategia intercambiable](img/diagrama-con-patron.svg)
+![Con Strategy, Pedido delega el cálculo del envío a una estrategia intercambiable](img/diagrama-con-patron.svg)
 
 ## Diagramas de clases
 
@@ -94,126 +89,132 @@ documentación de software.
 
 ### Versión sin patrón
 
-En `java/sin-patron` no hay interfaz ni estrategias. `Catalogo` recibe el
-criterio como texto en `ordenar()` y lo resuelve con un `switch` en un método
-privado.
+En `java/sin-patron` hay una sola clase que importa. `Pedido` recibe el tipo
+de envío como texto en `calcularEnvio()` y lo resuelve con un `switch`.
 
 ```mermaid
 classDiagram
-    class Producto {
-        -String nombre
-        -int precio
-        +getNombre() String
-        +getPrecio() int
+    class Pedido {
+        -int pesoKg
+        +Pedido(int pesoKg)
+        +calcularEnvio(String tipoEnvio) int
     }
-    class Catalogo {
-        -Producto[] productos
-        +Catalogo(Producto[] productos)
-        +ordenar(String criterio)
-        -vaAntes(Producto a, Producto b, String criterio) boolean
-        +mostrar()
-    }
-    class Principal
-    Catalogo o-- Producto : ordena
-    Principal ..> Catalogo : usa
-    Principal ..> Producto : crea con new
 ```
 
-Los dos algoritmos están dentro de `vaAntes()`. Para ordenar por precio de
-mayor a menor hay que abrir `Catalogo` y agregar otro `case`.
+Las dos fórmulas están dentro de `calcularEnvio()`. Para agregar el envío
+internacional hay que abrir `Pedido` y agregar otro `case`.
 
 ### Versión con patrón
 
-Con Strategy, `Catalogo` ya no conoce los criterios. Guarda una
-`EstrategiaOrden` y la usa. Cada criterio es una clase que implementa la
+Con Strategy, `Pedido` ya no conoce las fórmulas. Guarda una
+`EstrategiaEnvio` y la usa. Cada tipo de envío es una clase que implementa la
 interfaz.
 
 ```mermaid
 classDiagram
-    class Producto {
-        -String nombre
-        -int precio
-        +getNombre() String
-        +getPrecio() int
-    }
-    class EstrategiaOrden {
+    class EstrategiaEnvio {
         <<interface>>
-        +vaAntes(Producto a, Producto b) boolean
+        +calcular(int pesoKg) int
     }
-    class OrdenarPorNombre
-    class OrdenarPorPrecio
-    class OrdenarPorPrecioDescendente
-    class Catalogo {
-        -Producto[] productos
-        -EstrategiaOrden estrategia
-        +Catalogo(Producto[] productos, EstrategiaOrden estrategia)
-        +setEstrategia(EstrategiaOrden estrategia)
-        +ordenar()
-        +mostrar()
+    class EnvioEstandar
+    class EnvioExpres
+    class EnvioInternacional
+    class Pedido {
+        -int pesoKg
+        -EstrategiaEnvio estrategia
+        +setEstrategia(EstrategiaEnvio estrategia)
+        +calcularEnvio() int
     }
-    class Principal
-    EstrategiaOrden <|.. OrdenarPorNombre
-    EstrategiaOrden <|.. OrdenarPorPrecio
-    EstrategiaOrden <|.. OrdenarPorPrecioDescendente
-    Catalogo o-- EstrategiaOrden : delega
-    Catalogo o-- Producto : ordena
-    EstrategiaOrden ..> Producto : compara
-    Principal ..> Catalogo : usa
-    Principal ..> OrdenarPorNombre : crea con new
-    Principal ..> OrdenarPorPrecio : crea con new
-    Principal ..> OrdenarPorPrecioDescendente : crea con new
+    EstrategiaEnvio <|.. EnvioEstandar
+    EstrategiaEnvio <|.. EnvioExpres
+    EstrategiaEnvio <|.. EnvioInternacional
+    Pedido o-- EstrategiaEnvio : delega
 ```
 
-Compara con la versión sin patrón. `Catalogo` no tiene ninguna flecha hacia
-las tres clases de criterio, solo hacia la interfaz. El único lugar que las
-conoce es `Principal`, que es donde se arma todo.
+Compara con la versión sin patrón. `Pedido` no tiene ninguna flecha hacia las
+tres clases de envío, solo hacia la interfaz. El único lugar que las crea y
+las entrega es `Principal`, que no se dibuja para que el diagrama se lea.
 
 ## Cuándo sí y cuándo no
 
-Si hay dos variantes y no se espera que aparezcan más, un `if` es más simple
-y más fácil de leer. Una familia de clases ahí es la sobreingeniería de la
-que habla el README general. Strategy empieza a valer la pena cuando se
-cumple alguna de estas situaciones.
+Si hay dos o tres variantes y cada una es una fórmula corta, un `switch` o un
+`if` limpio es más simple y más fácil de leer. Una familia de clases ahí es la
+sobreingeniería de la que habla el README general, y conviene empezar por lo
+sencillo y abstraer cuando el cambio ya duele, no antes (Beck y Andres, 2004).
+Strategy con clases empieza a valer la pena cuando se cumple alguna de estas
+situaciones.
 
-- Hay varias formas de hacer lo mismo, y se espera que aparezcan más.
+- Cada algoritmo es largo o complejo, por ejemplo con validaciones, consultas
+  a una base de datos o llamadas a un servicio, y merece su propia clase, que
+  se pueda probar por separado.
+- El mismo `switch` se repite en varias clases, y cada regla nueva obliga a
+  corregirlas todas.
 - El algoritmo se elige o se cambia mientras el programa corre, por ejemplo
   porque el usuario lo escoge.
-- Cada algoritmo es lo bastante largo o complejo como para merecer su propia
-  clase, que se pueda probar por separado.
+- El algoritmo necesita guardar estado propio o tener varios métodos.
 
-También tiene costos. Quien arma el programa debe conocer las estrategias
-para poder elegir una (Gamma et al., 1994), y a cambio de poder agregar
-algoritmos sin tocar el contexto, hay más clases que leer.
-
-Un ejemplo real en la propia biblioteca de Java es `Comparator`. Es una
-interfaz con un método `compare`, y se le pasa a métodos de ordenamiento como
-`Arrays.sort` para controlar el criterio de orden (Oracle, s. f.). Es la misma
-idea que `EstrategiaOrden`. La diferencia es que `compare` devuelve un entero
-(negativo, cero o positivo) en lugar de `true` o `false`, porque así también
-distingue el empate. Aquí se usó una pregunta de sí o no para que el ejemplo
-fuera más corto.
+También tiene costos. Quien arma el programa debe conocer las estrategias para
+poder elegir una (Gamma et al., 1994), y a cambio de poder agregar algoritmos
+sin tocar el contexto, hay más clases que leer.
 
 Strategy y Decorator se parecen en que los dos reciben otro objeto por
 composición. Se distinguen por lo que hacen con él. Un decorador envuelve a un
 objeto de su mismo tipo y le suma comportamiento. Una estrategia reemplaza el
 algoritmo con el que el contexto hace su trabajo.
 
+## La alternativa sin clases
+
+Antes de escribir una familia de clases, vale la pena preguntarse si basta con
+pasar funciones. Norvig (1996) sostuvo que 16 de los 23 patrones del libro de
+Gamma et al. tienen una implementación cualitativamente más simple en lenguajes
+dinámicos como Lisp o Dylan que en C++. Strategy es uno de ellos, junto con
+Command, Template Method y Visitor, porque en esos lenguajes las funciones son
+valores de primera clase. Su resumen es que la estrategia es una variable cuyo
+valor es una función y que, con funciones de primera clase, el patrón "es
+invisible" (Norvig, 1996, traducción propia).
+
+Hay dos advertencias para leer esa afirmación con cuidado.
+
+- **No habla de Java.** Norvig compara Lisp y Dylan contra C++. Java es de tipos
+  estáticos, y una función necesita un tipo. Lo que ofrece es la interfaz
+  funcional, que es una interfaz con un solo método abstracto y cuyas
+  instancias se pueden crear con expresiones lambda (Oracle, s. f.). Así, el
+  patrón no desaparece, pero se aligera, porque la interfaz sigue, y las clases
+  de cada estrategia se vuelven una línea.
+- **El estado complica la alternativa.** Norvig anota que las funciones
+  capturan las variables locales de donde se crean. En Java, una lambda solo
+  puede usar las variables locales que no cambian después de asignarse. Si
+  intenta modificar una, el compilador marca `local variables referenced from a
+  lambda expression must be final or effectively final`. Cuando la estrategia
+  necesita llevar estado que cambia, una clase es más natural.
+
+La carpeta `java/alternativa-funcional` tiene el mismo ejemplo resuelto sin una
+clase por tipo de envío. Usa la misma interfaz y el mismo `Pedido`, y cada
+estrategia es una lambda. También muestra un mapa de nombre a función, que se
+parece a un arreglo de apuntadores a función en C. Es una práctica opcional,
+para comparar tres formas de resolver lo mismo: un `switch`, una clase por
+estrategia y una función por estrategia. Una regla razonable es empezar por el
+`switch` o por funciones, y pasar a clases cuando los algoritmos crezcan, se
+repitan o necesiten estado.
+
 ## Práctica en Java (20 min)
 
 Antes de ejecutar cada programa, anota qué crees que va a imprimir.
 Comparar tu predicción con el resultado es lo más valioso de la práctica.
 
-1. **Sin patrón.** Lee `java/sin-patron/Catalogo.java`. Ubica el `switch` y
-   fíjate cuántos algoritmos hay dentro de esa clase. Predice la salida y
+1. **Sin patrón.** Lee `java/sin-patron/Pedido.java`. Ubica el `switch` y
+   fíjate cuántas fórmulas hay dentro de esa clase. Predice la salida para un
+   pedido de 4 kg y ejecútalo.
+2. **Con patrón.** Lee `java/con-patron/EstrategiaEnvio.java`,
+   `EnvioExpres.java` y `Principal.java`. Fíjate que `Pedido` ya no menciona
+   ninguna fórmula. Predice cuánto costará el envío internacional de 4 kg y
    ejecútalo.
-2. **Con patrón.** Lee `java/con-patron/EstrategiaOrden.java`,
-   `OrdenarPorPrecio.java` y `Principal.java`. Fíjate que el ciclo de
-   `Catalogo.ordenar()` ya no menciona ningún criterio. Predice en qué orden
-   quedarán los productos con `OrdenarPorPrecioDescendente` y ejecútalo.
-3. **Comparar.** Para ordenar por nombre de la Z a la A, ¿qué archivos habría
-   que modificar o escribir en cada versión? Y si en `Principal` escribieras
-   `"presio"` en lugar de `"precio"`, o `OrdenarPorPresio` en lugar de
-   `OrdenarPorPrecio`, ¿cuándo te enterarías del error en cada versión?
+3. **Comparar.** Para agregar el envío por dron, ¿qué archivos habría que
+   modificar o escribir en cada versión? Y si en `Principal` escribieras
+   `"express"` en lugar de `"expres"`, o `EnvioExpress` en lugar de
+   `EnvioExpres`, ¿cuándo te enterarías del error en cada versión?
+4. **Opcional.** Abre `java/alternativa-funcional/Principal.java` y compáralo
+   con el de `con-patron`. ¿Qué desapareció? ¿Qué se conserva?
 
 ### Cómo ejecutar
 
@@ -225,46 +226,50 @@ javac *.java
 java Principal
 ```
 
-Repite con `java/con-patron`. En VS Code, abre una versión a la vez (menú
-*File > Open Folder*), porque las dos carpetas tienen clases con el mismo
-nombre.
+Repite con `java/con-patron` y, si quieres, con `java/alternativa-funcional`.
+En VS Code, abre una versión a la vez (menú *File > Open Folder*), porque las
+carpetas tienen clases con el mismo nombre.
 
 ## Qué gana y qué cuesta usar Strategy
 
-| Aspecto | Sin patrón | Con patrón |
-|---|---|---|
-| Dónde viven los algoritmos | Dentro de `Catalogo.vaAntes()`, en un `switch` | Uno por clase, fuera de `Catalogo` |
-| Agregar el criterio de precio descendente | Abrir `Catalogo` y agregar un `case` | Escribir una clase nueva y usarla en `Principal` |
-| Cómo se elige el criterio | Con un texto, como `"nombre"` | Con un objeto, como `new OrdenarPorNombre()` |
-| Error de dedo al elegir el criterio | Compila y falla al ejecutar con `IllegalArgumentException` | No compila |
-| Cambiar de criterio mientras corre | Mandar otro texto a `ordenar()` | Llamar a `setEstrategia()` |
-| Clases con dos criterios | 3 (`Producto`, `Catalogo` y `Principal`) | 6 (las anteriores, la interfaz y dos estrategias) |
-| Clases con tres criterios | 3, y `Catalogo` crece | 7, y `Catalogo` no cambia |
-| Costo | Pocas piezas al inicio, pero la clase crece con cada algoritmo | Más piezas desde el principio, y quien arma el programa debe conocer las estrategias |
+| Aspecto | Sin patrón | Con patrón | Alternativa funcional |
+|---|---|---|---|
+| Dónde viven las fórmulas | Dentro de `Pedido.calcularEnvio()`, en un `switch` | Una por clase, fuera de `Pedido` | Una lambda por tipo de envío, fuera de `Pedido` |
+| Agregar el envío internacional | Abrir `Pedido` y agregar un `case` | Escribir una clase nueva y usarla en `Principal` | Escribir una lambda nueva y usarla en `Principal` |
+| Cómo se elige el tipo de envío | Con un texto, como `"expres"` | Con un objeto, como `new EnvioExpres()` | Con una lambda, o con un texto si se usa el mapa |
+| Error de dedo al elegir | Compila y falla al ejecutar con `IllegalArgumentException` | No compila | Con lambdas no compila. Con el mapa y un texto mal escrito, `get` devuelve `null` y falla al ejecutar |
+| Cambiar de tipo de envío mientras corre | Mandar otro texto a `calcularEnvio()` | Llamar a `setEstrategia()` | Llamar a `setEstrategia()` |
+| Clases con dos tipos de envío | 2 (`Pedido` y `Principal`) | 5 (las anteriores, la interfaz y dos estrategias) | 3 (las dos primeras y la interfaz) |
+| Clases con tres tipos de envío | 2, y `Pedido` crece | 6, y `Pedido` no cambia | 3, y `Pedido` no cambia |
+| Costo | Pocas piezas al inicio, pero la clase crece con cada fórmula | Más piezas desde el principio, y quien arma el programa debe conocer las estrategias | Pocas piezas, pero una lambda no se prueba ni se reutiliza tan fácil como una clase con nombre, y el estado que cambia complica |
 
-Con dos criterios la versión sin patrón es más corta y igual de clara. El
-patrón gana cuando los criterios se acumulan, o cuando hay que elegirlos o
-cambiarlos mientras el programa corre.
+Con dos tipos de envío y fórmulas de una línea, la versión sin patrón es la más
+corta y la más clara. El patrón gana cuando las fórmulas crecen o se repiten, y
+la alternativa funcional gana cuando son cortas pero se quiere cambiarlas o
+agregarlas sin tocar `Pedido`.
 
 ## Árbol de archivos
 
 ```
 06 - Strategy/
 ├── README.md
-├── img/                   diagramas de este README en formato SVG
+├── img/                      diagramas de este README en formato SVG
 ├── java/
-│   ├── sin-patron/        Producto.java, Catalogo.java y Principal.java
-│   └── con-patron/        Producto.java, EstrategiaOrden.java,
-│                          OrdenarPorNombre.java, OrdenarPorPrecio.java,
-│                          OrdenarPorPrecioDescendente.java, Catalogo.java
-│                          y Principal.java
-└── referencia-csharp/     versión original en C#, solo de consulta
+│   ├── sin-patron/           Pedido.java y Principal.java
+│   ├── con-patron/           EstrategiaEnvio.java, EnvioEstandar.java,
+│   │                         EnvioExpres.java, EnvioInternacional.java,
+│   │                         Pedido.java y Principal.java
+│   └── alternativa-funcional/ EstrategiaEnvio.java, Pedido.java y Principal.java
+└── referencia-csharp/        versión original en C#, con ordenamiento de
+                              productos, solo de consulta
 ```
 
 Los programas no llevan acentos a propósito, para evitar problemas de
-codificación en la consola de Windows. Los precios son pesos enteros (`int`)
+codificación en la consola de Windows. Los costos son pesos enteros (`int`)
 para no mezclar esta práctica con el tema de precisión decimal que se vio en
-Adapter.
+Adapter. La versión en C# de la carpeta `referencia-csharp` usa otro ejemplo,
+el de ordenar productos por nombre o por precio, pero la estructura del patrón
+es la misma.
 
 ## Anexos
 
@@ -296,7 +301,7 @@ intercambia en cada caso.
 | `cannot find symbol` al compilar | Se compiló solo un archivo y faltan los demás | Usa `javac *.java` dentro de la carpeta |
 | `class X is public, should be declared in a file named X.java` | El nombre del archivo no coincide con el de la clase pública | Cada clase pública va en un archivo con su mismo nombre |
 | `javac` no se reconoce como comando | El JDK no está instalado o no está en el PATH | Usa el IDE de tu curso de Java |
-| `NullPointerException` en `ordenar()` | El contexto se creó sin estrategia, o se le pasó `null` | Entrega una estrategia en el constructor, o llama a `setEstrategia()` antes de ordenar |
+| `NullPointerException` en `calcularEnvio()` | El contexto se creó con una estrategia `null`, o el mapa no tenía el nombre que se buscó | Entrega una estrategia válida en el constructor o con `setEstrategia()`, y revisa el texto con que se busca en el mapa |
 
 ## Entregable
 
@@ -309,11 +314,18 @@ que observaste la diferencia.
 
 ## Referencias
 
+Beck, K. y Andres, C. (2004). *Extreme Programming Explained: Embrace Change*
+(2.ª ed.). Addison-Wesley.
+
 Gamma, E., Helm, R., Johnson, R. y Vlissides, J. (1994). *Design Patterns:
 Elements of Reusable Object-Oriented Software*. Addison-Wesley.
 
-Oracle. (s. f.). *Comparator* (Java SE 21 y JDK 21). Documentación de la API.
-https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Comparator.html
+Norvig, P. (1996). *Design Patterns in Dynamic Languages* [Presentación].
+https://norvig.com/design-patterns/
+
+Oracle. (s. f.). *FunctionalInterface* (Java SE 21 y JDK 21). Documentación
+de la API.
+https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/FunctionalInterface.html
 
 UML Diagrams. (s. f.-a). *UML composition*.
 https://www.uml-diagrams.org/composition.html

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="470" viewBox="0 0 680 470" role="img" font-family="Helvetica, Arial, sans-serif">
-<title>Con Strategy, el contexto delega el algoritmo a una estrategia intercambiable</title>
-<desc>Catalogo guarda una EstrategiaOrden y le pregunta si un producto va antes que otro. Tres clases implementan la estrategia: por nombre, por precio y por precio descendente. Se pueden intercambiar en ejecución.</desc>
+<title>Con Strategy, el pedido delega el cálculo del envío a una estrategia intercambiable</title>
+<desc>Pedido guarda una EstrategiaEnvio y le pregunta cuánto cuesta enviar un peso. Tres clases implementan la estrategia: EnvioEstandar, EnvioExpres y EnvioInternacional. Se pueden intercambiar en ejecución.</desc>
 <defs>
 <marker id="mg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
 </defs>
@@ -11,28 +11,27 @@
 <text x="340" y="53" text-anchor="middle" font-size="14" font-weight="500" fill="#444441">Cliente</text>
 <text x="340" y="72" text-anchor="middle" font-size="12" fill="#5F5E5A">Principal elige la estrategia</text>
 <rect x="190" y="130" width="300" height="66" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"/>
-<text x="340" y="154" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">Catalogo (contexto)</text>
+<text x="340" y="154" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">Pedido (contexto)</text>
 <text x="340" y="174" text-anchor="middle" font-size="12" fill="#0F6E56">guarda una estrategia y le delega</text>
-<text x="340" y="188" text-anchor="middle" font-size="12" fill="#0F6E56">la comparación</text>
+<text x="340" y="188" text-anchor="middle" font-size="12" fill="#0F6E56">el cálculo del envío</text>
 <rect x="120" y="240" width="440" height="56" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
-<text x="340" y="263" text-anchor="middle" font-size="14" font-weight="500" fill="#3C3489">EstrategiaOrden (interfaz)</text>
-<text x="340" y="282" text-anchor="middle" font-size="12" fill="#534AB7">vaAntes(Producto a, Producto b)</text>
+<text x="340" y="263" text-anchor="middle" font-size="14" font-weight="500" fill="#3C3489">EstrategiaEnvio (interfaz)</text>
+<text x="340" y="282" text-anchor="middle" font-size="12" fill="#534AB7">calcular(int pesoKg)</text>
 <line x1="95" y1="344" x2="95" y2="320" stroke="#5F5E5A" stroke-width="1.5" stroke-dasharray="5 4"/>
 <line x1="340" y1="344" x2="340" y2="320" stroke="#5F5E5A" stroke-width="1.5" stroke-dasharray="5 4"/>
 <line x1="585" y1="344" x2="585" y2="320" stroke="#5F5E5A" stroke-width="1.5" stroke-dasharray="5 4"/>
 <line x1="95" y1="320" x2="585" y2="320" stroke="#5F5E5A" stroke-width="1.5" stroke-dasharray="5 4"/>
 <line x1="340" y1="320" x2="340" y2="298" stroke="#5F5E5A" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#mg)"/>
 <rect x="20" y="344" width="150" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
-<text x="95" y="368" text-anchor="middle" font-size="13" font-weight="500" fill="#444441">OrdenarPorNombre</text>
-<text x="95" y="386" text-anchor="middle" font-size="12" fill="#5F5E5A">algoritmo 1</text>
+<text x="95" y="368" text-anchor="middle" font-size="13" font-weight="500" fill="#444441">EnvioEstandar</text>
+<text x="95" y="386" text-anchor="middle" font-size="12" fill="#5F5E5A">peso * 15</text>
 <rect x="265" y="344" width="150" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
-<text x="340" y="368" text-anchor="middle" font-size="13" font-weight="500" fill="#444441">OrdenarPorPrecio</text>
-<text x="340" y="386" text-anchor="middle" font-size="12" fill="#5F5E5A">algoritmo 2</text>
+<text x="340" y="368" text-anchor="middle" font-size="13" font-weight="500" fill="#444441">EnvioExpres</text>
+<text x="340" y="386" text-anchor="middle" font-size="12" fill="#5F5E5A">peso * 30 + 50</text>
 <rect x="500" y="344" width="160" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
-<text x="580" y="364" text-anchor="middle" font-size="12" font-weight="500" fill="#444441">OrdenarPorPrecio</text>
-<text x="580" y="378" text-anchor="middle" font-size="12" font-weight="500" fill="#444441">Descendente</text>
-<text x="580" y="394" text-anchor="middle" font-size="12" fill="#5F5E5A">algoritmo 3</text>
-<text x="340" y="428" text-anchor="middle" font-size="12" fill="#444441">Un criterio nuevo es una clase nueva. Catalogo no se modifica.</text>
+<text x="580" y="368" text-anchor="middle" font-size="13" font-weight="500" fill="#444441">EnvioInternacional</text>
+<text x="580" y="386" text-anchor="middle" font-size="12" fill="#5F5E5A">peso * 80 + 200</text>
+<text x="340" y="428" text-anchor="middle" font-size="12" fill="#444441">Un tipo de envío nuevo es una clase nueva. Pedido no se modifica.</text>
 <line x1="60" y1="452" x2="100" y2="452" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#mg)"/>
 <text x="112" y="456" font-size="12" fill="#444441">Usa</text>
 <line x1="200" y1="452" x2="240" y2="452" stroke="#5F5E5A" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#mg)"/>

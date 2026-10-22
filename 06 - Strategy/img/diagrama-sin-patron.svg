@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="680" height="400" viewBox="0 0 680 400" role="img" font-family="Helvetica, Arial, sans-serif">
-<title>Sin Strategy, el contexto contiene todos los algoritmos en un switch</title>
-<desc>La clase Catalogo ordena productos y decide el criterio con un switch interno. Cada criterio nuevo obliga a abrir Catalogo y agregar otro case.</desc>
+<title>Sin Strategy, el pedido contiene todas las fórmulas de envío en un switch</title>
+<desc>La clase Pedido calcula el costo de envío y decide la fórmula con un switch interno. Cada tipo de envío nuevo obliga a abrir Pedido y agregar otro case.</desc>
 <defs>
 <marker id="mg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
 </defs>
@@ -10,14 +10,14 @@
 <text x="340" y="53" text-anchor="middle" font-size="14" font-weight="500" fill="#444441">Cliente</text>
 <text x="340" y="72" text-anchor="middle" font-size="12" fill="#5F5E5A">Principal</text>
 <rect x="120" y="130" width="440" height="190" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="1"/>
-<text x="340" y="156" text-anchor="middle" font-size="14" font-weight="500" fill="#712B13">Catalogo</text>
-<text x="340" y="176" text-anchor="middle" font-size="12" fill="#993C1D">ordenar(String criterio)</text>
+<text x="340" y="156" text-anchor="middle" font-size="14" font-weight="500" fill="#712B13">Pedido</text>
+<text x="340" y="176" text-anchor="middle" font-size="12" fill="#993C1D">calcularEnvio(String tipoEnvio)</text>
 <rect x="150" y="192" width="380" height="112" rx="6" fill="#FFFFFF" stroke="#993C1D" stroke-width="1"/>
-<text x="170" y="216" font-size="12" fill="#712B13" font-family="Menlo, Consolas, monospace">switch (criterio) {</text>
-<text x="190" y="238" font-size="12" fill="#712B13" font-family="Menlo, Consolas, monospace">case "nombre": ... algoritmo 1</text>
-<text x="190" y="258" font-size="12" fill="#712B13" font-family="Menlo, Consolas, monospace">case "precio": ... algoritmo 2</text>
+<text x="170" y="216" font-size="12" fill="#712B13" font-family="Menlo, Consolas, monospace">switch (tipoEnvio) {</text>
+<text x="190" y="238" font-size="12" fill="#712B13" font-family="Menlo, Consolas, monospace">case "estandar": peso * 15</text>
+<text x="190" y="258" font-size="12" fill="#712B13" font-family="Menlo, Consolas, monospace">case "expres": peso * 30 + 50</text>
 <text x="190" y="278" font-size="12" fill="#993C1D" font-family="Menlo, Consolas, monospace">(case nuevo: abrir esta clase)</text>
 <text x="170" y="296" font-size="12" fill="#712B13" font-family="Menlo, Consolas, monospace">}</text>
-<text x="340" y="352" text-anchor="middle" font-size="13" font-weight="500" fill="#444441">Todos los algoritmos viven dentro del contexto.</text>
-<text x="340" y="374" text-anchor="middle" font-size="12" fill="#5F5E5A">Cada criterio nuevo obliga a modificar Catalogo.</text>
+<text x="340" y="352" text-anchor="middle" font-size="13" font-weight="500" fill="#444441">Todas las fórmulas viven dentro del pedido.</text>
+<text x="340" y="374" text-anchor="middle" font-size="12" fill="#5F5E5A">Cada tipo de envío nuevo obliga a modificar Pedido.</text>
 </svg>
