@@ -115,11 +115,9 @@ classDiagram
         +ControlCupo(int disponibles)
         +descontar()
     }
-    class Principal
     Inscripciones *-- GeneradorConstancias : crea y guarda
     Inscripciones *-- EnvioCorreo : crea y guarda
     Inscripciones *-- ControlCupo : crea y guarda
-    Principal ..> Inscripciones : usa
 ```
 
 Los rombos son rellenos porque `Inscripciones` crea a sus tres interesados y es
@@ -152,23 +150,17 @@ classDiagram
         +ControlCupo(int disponibles)
     }
     class Auditoria
-    class Principal
     Observador <|.. GeneradorConstancias
     Observador <|.. EnvioCorreo
     Observador <|.. ControlCupo
     Observador <|.. Auditoria
     Inscripciones o-- Observador : avisa a
-    Principal ..> Inscripciones : usa
-    Principal ..> GeneradorConstancias : crea con new
-    Principal ..> EnvioCorreo : crea con new
-    Principal ..> ControlCupo : crea con new
-    Principal ..> Auditoria : crea con new
 ```
 
 Compara con la versión sin patrón. `Inscripciones` no tiene ninguna flecha
 hacia las cuatro clases de observadores, solo hacia la interfaz, y el rombo
-pasó de relleno a hueco porque ya no las crea. El único lugar que las conoce
-es `Principal`, que es donde se arma todo.
+pasó de relleno a hueco porque ya no las crea. El único lugar que las crea y
+las suscribe es `Principal`, que no se dibuja para que el diagrama se lea.
 
 ## Cuándo sí y cuándo no
 
