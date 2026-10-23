@@ -6,6 +6,11 @@ import java.util.List;
 public class Inscripciones {
 
     private final List<Observador> observadores = new ArrayList<>();
+    private int lugares;
+
+    public Inscripciones(int lugares) {
+        this.lugares = lugares;
+    }
 
     // Alguien pide que se le avise.
     public void suscribir(Observador observador) {
@@ -18,7 +23,17 @@ public class Inscripciones {
     }
 
     public void inscribir(String alumno) {
-        System.out.println("\nSe inscribe: " + alumno);
+        // La REGLA del cupo vive aqui, en el sujeto, y se revisa ANTES de
+        // aceptar al alumno. Un observador solo reacciona a algo que ya
+        // ocurrio: no puede impedir que ocurra, ni depende del orden en que
+        // se suscribieron los demas. Si no hay lugar, no se inscribe y a nadie
+        // se le avisa.
+        if (lugares == 0) {
+            System.out.println("\nCupo lleno. No se inscribe: " + alumno);
+            return;
+        }
+        lugares--;
+        System.out.println("\nSe inscribe: " + alumno + " (lugares restantes: " + lugares + ")");
         notificar(alumno);
     }
 
