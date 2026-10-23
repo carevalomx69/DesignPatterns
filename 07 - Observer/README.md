@@ -25,7 +25,7 @@ abajo.
 |---|---|---|
 | Interfaz | `Observador` | Es un contrato. Dice que cualquier observador tiene un método `actualizar`, sin escribir qué hace. Es lo único que el sujeto sabe de sus interesados |
 | Implementación | Flechas punteadas de `GeneradorConstancias`, `EnvioCorreo`, `ControlCupo` y `Auditoria` hacia `Observador` (`implements`) | Cada clase se compromete a cumplir el contrato y decide qué hace al recibir el aviso. Si le falta el método, no compila |
-| Colección de objetos | `List<Observador>` dentro de `Inscripciones` | Una lista que crece según se agregan elementos. El `<Observador>` indica que solo guarda objetos que cumplen esa interfaz. Se recorre con `for (Observador o : observadores)` |
+| Colección de objetos | `List<Observador>` dentro de `Inscripciones` | Una lista que crece según se agregan elementos. El `<Observador>` indica que solo guarda objetos que cumplen esa interfaz. Se recorre con un `for` mejorado, que se explica en la sección Dónde ocurre el aviso |
 | Composición y agregación | Rombo relleno en la versión sin patrón y rombo hueco en la versión con patrón | En los dos casos un objeto guarda a otros, pero cambia quién los crea. Se explica debajo de la tabla |
 | Delegación | `observador.actualizar(alumno)` dentro de `notificar()` | `Inscripciones` no hace el trabajo de reaccionar. Avisa y cada observador hace lo suyo |
 | Polimorfismo | No se dibuja | `notificar()` llama a `actualizar()` sobre cada elemento de la lista. Al ejecutarse, Java usa el objeto real de cada uno, que son clases distintas, aunque todos estén declarados con el tipo de la interfaz |
@@ -83,6 +83,50 @@ lista y llama a `actualizar()` en cada elemento. Quien arma el programa, que
 aquí es `Principal`, decide quién se suscribe y quién se da de baja.
 
 ![Con Observer, Inscripciones avisa a una lista de observadores a través de una interfaz](img/diagrama-con-patron.svg)
+
+### Dónde ocurre el aviso
+
+El corazón del patrón es un método pequeño. Está en
+`java/con-patron/Inscripciones.java` y se llama `notificar()`. Es el único
+lugar donde el sujeto recorre su lista de observadores.
+
+```java
+private void notificar(String alumno) {
+    for (Observador observador : observadores) {
+        observador.actualizar(alumno);
+    }
+}
+```
+
+El `for` se lee "para cada `observador` de la lista `observadores`, llama a
+`actualizar(alumno)`". En cada vuelta, `observador` es el siguiente elemento de
+la lista, en el orden en que se suscribieron. Esa notación se llama `for`
+mejorado, o *for-each*, y no existe en C. La versión con índice, que es la
+equivalente a un ciclo de C, es esta.
+
+```java
+for (int i = 0; i < observadores.size(); i++) {
+    Observador observador = observadores.get(i);
+    observador.actualizar(alumno);
+}
+```
+
+Las dos hacen lo mismo y producen la misma salida. `size()` es el número de
+elementos de la lista y `get(i)` devuelve el de la posición `i`, como
+`arreglo[i]`. La versión mejorada solo se ahorra llevar la cuenta del índice.
+
+La lista misma es un `ArrayList`, una clase de la biblioteca estándar de Java.
+La documentación la describe como una implementación de la interfaz `List`
+basada en un arreglo que cambia de tamaño y cuya capacidad crece
+automáticamente al agregar elementos (Oracle, s. f.). En términos
+estructurados, es un arreglo dinámico. `suscribir()` solo hace
+`observadores.add(observador)`, que agrega al final, y `desuscribir()` hace
+`observadores.remove(observador)`, que quita la primera coincidencia.
+
+Hay algo más que notar en esta clase. `notificar()` no menciona a
+`GeneradorConstancias`, ni a `EnvioCorreo`, ni a ningún otro observador
+concreto. Solo conoce a `Observador`, y por eso agregar o quitar uno no cambia
+este método.
 
 ## Diagramas de clases
 
@@ -194,7 +238,7 @@ Comparar tu predicción con el resultado es lo más valioso de la práctica.
    clases crea con `new` y con qué nombre llama a cada una. Predice la salida
    y ejecútalo.
 2. **Con patrón.** Lee `java/con-patron/Observador.java`,
-   `Inscripciones.java` y `Principal.java`. Predice qué líneas se imprimirán
+   `Inscripciones.java` (ubica el método `notificar()`) y `Principal.java`. Predice qué líneas se imprimirán
    cuando se inscriba Beto, después de que el correo se dio de baja, y cuando
    se inscriba Carla, después de suscribir a `Auditoria`. Ejecútalo.
 3. **Comparar.** Si se quisiera agregar un aviso por mensaje de texto, ¿qué
@@ -301,6 +345,9 @@ Bloch, J. (2018). *Effective Java* (3.ª ed.). Addison-Wesley.
 
 Gamma, E., Helm, R., Johnson, R. y Vlissides, J. (1994). *Design Patterns:
 Elements of Reusable Object-Oriented Software*. Addison-Wesley.
+
+Oracle. (s. f.). *ArrayList* (Java SE 21 y JDK 21). Documentación de la API.
+https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html
 
 UML Diagrams. (s. f.-a). *UML composition*.
 https://www.uml-diagrams.org/composition.html
